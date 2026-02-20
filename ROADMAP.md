@@ -1,6 +1,15 @@
 # Roadmap
 
-## v0.2.0 (current)
+## v0.3.0 (current)
+- [x] Drift auto-detection from assumption expiry (scheduled workflow → auto-open DRIFT issues)
+- [x] CODEOWNERS integration for canon files
+- [x] Coherence score badge for README
+- [x] Label bootstrap (auto-create `major`, `assumption-waiver`, `coherence-dashboard`)
+- [x] `coherence init` setup script (bootstrap folder structure + templates into any repo)
+- [x] `coherence check` local validator (run gates locally before pushing)
+- [x] Release automation (tag + GitHub Release from CI)
+
+## v0.2.0
 - [x] GitHub Actions: DLR enforcement on major PRs
 - [x] GitHub Actions: assumption expiry warnings
 - [x] GitHub Actions: canon changelog enforcement
@@ -14,15 +23,6 @@
 - [x] Documentation and training assets
 - [x] PR and issue templates
 - [x] Coherence Score specification
-
-## v0.3.0
-- Drift auto-detection from assumption expiry (scheduled workflow → auto-open DRIFT issues)
-- CODEOWNERS integration for canon files
-- Coherence score badge for README
-- Label bootstrap (auto-create `major`, `assumption-waiver`, `coherence-dashboard`)
-- `coherence init` setup script (bootstrap folder structure + templates into any repo)
-- `coherence check` local validator (run gates locally before pushing)
-- Release automation (tag + GitHub Release from CI)
 
 ## v0.4.0
 - Reusable composite actions (`uses: 8ryanWh1t3/CoherenceOps/.github/actions/...`)

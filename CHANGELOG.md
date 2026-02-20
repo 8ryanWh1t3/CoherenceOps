@@ -4,6 +4,20 @@ All notable changes to CoherenceOps are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.0] - 2026-02-20
+
+### Added
+- Drift auto-detection workflow — auto-opens GitHub issues for expired assumptions
+- CODEOWNERS file — canon, intel, and workflow files require maintainer review
+- Coherence score badge in README (shields.io endpoint)
+- Label bootstrap workflow — one-click creation of all required labels
+- `bin/coherence-init` — bootstrap CoherenceOps into any repo (bash, zero deps)
+- `bin/coherence-check` — run coherence gates locally before pushing (bash, zero deps)
+- Release automation workflow — GitHub Releases from version tags
+
+### Changed
+- `coherence-score.yml` now also generates `coherence_badge.json` for the README badge
+
 ## [0.2.0] - 2026-02-20
 
 ### Added

@@ -1,0 +1,39 @@
+name: Label Bootstrap
+
+on:
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  bootstrap-labels:
+    name: Bootstrap Labels
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const labels = [
+              { name: 'major', color: 'e11d48', description: 'Major PR — requires a DLR' },
+              { name: 'assumption-waiver', color: 'f59e0b', description: 'Waive expired assumption gate' },
+              { name: 'coherence-dashboard', color: '8b5cf6', description: 'Coherence dashboard issue' },
+              { name: 'drift', color: 'ef4444', description: 'Drift signal' },
+              { name: 'auto-detected', color: '6366f1', description: 'Auto-detected by CI' },
+              { name: 'decision', color: '3b82f6', description: 'Decision record' },
+            ];
+
+            for (const label of labels) {
+              try {
+                await github.rest.issues.createLabel({ owner, repo, ...label });
+                core.info(`Created label: ${label.name}`);
+              } catch (e) {
+                if (e.status === 422) {
+                  core.info(`Label already exists: ${label.name}`);
+                } else {
+                  throw e;
+                }
+              }
+            }

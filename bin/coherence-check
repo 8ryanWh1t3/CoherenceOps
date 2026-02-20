@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# coherence-check — Run coherence gates locally
+# Usage: ./coherence-check
+# Exit code: 0 = all pass, 1 = failures detected
+
+RED='\033[0;31m'
+YEL='\033[0;33m'
+GRN='\033[0;32m'
+GRY='\033[0;90m'
+RST='\033[0m'
+
+PASS=0
+WARN=0
+FAIL=0
+SKIP=0
+
+result() {
+  local gate="$1" status="$2" msg="$3"
+  case "$status" in
+    pass) printf "${GRN}PASS${RST}  %s — %s\n" "$gate" "$msg"; PASS=$((PASS + 1)) ;;
+    warn) printf "${YEL}WARN${RST}  %s — %s\n" "$gate" "$msg"; WARN=$((WARN + 1)) ;;
+    fail) printf "${RED}FAIL${RST}  %s — %s\n" "$gate" "$msg"; FAIL=$((FAIL + 1)) ;;
+    skip) printf "${GRY}SKIP${RST}  %s — %s\n" "$gate" "$msg"; SKIP=$((SKIP + 1)) ;;
+  esac
+}
+
+echo "CoherenceOps Check v0.3.0"
+echo "========================="
+echo ""
+
+# ── Gate 1: Assumption Expiry ──
+ASM_FILE="coherence/intel/assumptions.yaml"
+if [ ! -f "$ASM_FILE" ]; then
+  result "Assumption Expiry" "skip" "No assumptions.yaml found"
+else
+  TODAY=$(date +%Y-%m-%d)
+  # macOS: date -v+14d, Linux: date -d "+14 days"
+  WARN_DATE=$(date -v+14d +%Y-%m-%d 2>/dev/null || date -d "+14 days" +%Y-%m-%d 2>/dev/null || echo "")
+
+  expired_list=""
+  expiring_list=""
+  active_count=0
+
+  current_id="" current_status="" current_expires=""
+  process_block() {
+    if [ -n "$current_id" ] && [ "$current_status" = "active" ]; then
+      active_count=$((active_count + 1))
+      if [ -n "$current_expires" ]; then
+        if [[ "$current_expires" < "$TODAY" ]]; then
+          expired_list="$expired_list $current_id($current_expires)"
+        elif [ -n "$WARN_DATE" ] && [[ "$current_expires" < "$WARN_DATE" || "$current_expires" = "$WARN_DATE" ]]; then
+          expiring_list="$expiring_list $current_id($current_expires)"
+        fi
+      fi
+    fi
+  }
+
+  while IFS= read -r line; do
+    if echo "$line" | grep -q '^\s*- id:'; then
+      process_block
+      current_id=$(echo "$line" | sed 's/.*id:[[:space:]]*//' | tr -d ' ')
+      current_status="" current_expires=""
+    fi
+    if echo "$line" | grep -q '^\s*status:'; then
+      current_status=$(echo "$line" | sed 's/.*status:[[:space:]]*//' | tr -d ' ')
+    fi
+    if echo "$line" | grep -q '^\s*expires:'; then
+      current_expires=$(echo "$line" | sed 's/.*expires:[[:space:]]*//' | tr -d ' ')
+    fi
+  done < "$ASM_FILE"
+  process_block
+
+  if [ -n "$expired_list" ]; then
+    result "Assumption Expiry" "fail" "Expired:$expired_list"
+  elif [ -n "$expiring_list" ]; then
+    result "Assumption Expiry" "warn" "Expiring within 14d:$expiring_list"
+  else
+    result "Assumption Expiry" "pass" "$active_count active assumption(s), all current"
+  fi
+fi
+
+# ── Gate 2: Drift Format Validation ──
+DRIFT_DIR="coherence/drift"
+if [ ! -d "$DRIFT_DIR" ]; then
+  result "Drift Format" "skip" "No drift directory"
+else
+  drift_files=()
+  for f in "$DRIFT_DIR"/DRIFT-[0-9]*.md; do
+    [ -f "$f" ] && drift_files+=("$f")
+  done
+
+  if [ "${#drift_files[@]}" -eq 0 ]; then
+    result "Drift Format" "skip" "No drift files found"
+  else
+    drift_issues=""
+    for df in "${drift_files[@]}"; do
+      base=$(basename "$df")
+      missing=""
+      for section in "## Severity" "## What Drifted" "## Evidence" "## Affected" "## Status"; do
+        grep -q "$section" "$df" || missing="$missing $section"
+      done
+      if [ -n "$missing" ]; then
+        drift_issues="$drift_issues $base: missing$missing;"
+      fi
+      # Check severity value
+      sev=$(grep -A1 "## Severity" "$df" 2>/dev/null | tail -1 | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
+      if [ -n "$sev" ] && ! echo "$sev" | grep -qE '^(low|medium|critical)$'; then
+        drift_issues="$drift_issues $base: invalid severity '$sev';"
+      fi
+    done
+
+    if [ -n "$drift_issues" ]; then
+      result "Drift Format" "warn" "$drift_issues"
+    else
+      result "Drift Format" "pass" "${#drift_files[@]} drift file(s) validated"
+    fi
+  fi
+fi
+
+# ── Gate 3: Canon Changelog ──
+staged=$(git diff --cached --name-only 2>/dev/null || echo "")
+if [ -z "$staged" ]; then
+  # Fall back to uncommitted changes
+  staged=$(git diff --name-only 2>/dev/null || echo "")
+fi
+
+canon_changed=$(echo "$staged" | grep '^coherence/canon/' | grep -v 'changelog.md' || true)
+changelog_changed=$(echo "$staged" | grep '^coherence/canon/changelog.md' || true)
+
+if [ -z "$canon_changed" ]; then
+  result "Canon Changelog" "skip" "No canon files changed"
+elif [ -n "$changelog_changed" ]; then
+  result "Canon Changelog" "pass" "Canon changed with changelog entry"
+else
+  result "Canon Changelog" "fail" "Canon changed without changelog entry — update coherence/canon/changelog.md"
+fi
+
+# ── Gate 4: DLR Advisory ──
+staged_count=0
+if [ -n "$staged" ]; then
+  staged_count=$(echo "$staged" | grep -c '.' || true)
+fi
+touches_gov=$(echo "$staged" | grep -E '^coherence/(canon|intel)/' || true)
+
+if [ "$staged_count" -gt 10 ] || [ -n "$touches_gov" ]; then
+  result "DLR Advisory" "warn" "Changes look major ($staged_count files). Ensure a DLR is linked in your PR."
+else
+  result "DLR Advisory" "skip" "Not a major change ($staged_count changed files)"
+fi
+
+# ── Summary ──
+echo ""
+echo "========================="
+printf "Results: ${GRN}%d pass${RST}, ${YEL}%d warn${RST}, ${RED}%d fail${RST}, ${GRY}%d skip${RST}\n" "$PASS" "$WARN" "$FAIL" "$SKIP"
+
+if [ "$FAIL" -gt 0 ]; then
+  printf "${RED}Coherence check failed.${RST}\n"
+  exit 1
+else
+  printf "${GRN}Coherence check passed.${RST}\n"
+  exit 0
+fi

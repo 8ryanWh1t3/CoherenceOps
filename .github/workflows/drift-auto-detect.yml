@@ -1,0 +1,115 @@
+name: Drift Auto-Detection
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Monday 9:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  detect-drift:
+    name: Detect Assumption Expiry Drift
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for expired assumptions
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const { owner, repo } = context.repo;
+            const path = 'coherence/intel/assumptions.yaml';
+
+            if (!fs.existsSync(path)) {
+              core.info('No assumptions.yaml found. Nothing to check.');
+              return;
+            }
+
+            const content = fs.readFileSync(path, 'utf8');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Parse assumptions (same pattern as coherence-gates.yml Gate 2)
+            const blocks = content.split(/^\s*- id:/m).slice(1);
+            const assumptions = blocks.map(block => {
+              const id = (block.match(/^\s*(.+)/m) || ['', ''])[1].trim();
+              const status = (block.match(/status:\s*(.+)/m) || ['', ''])[1].trim();
+              const expires = (block.match(/expires:\s*(.+)/m) || ['', ''])[1].trim();
+              const statement = (block.match(/statement:\s*"?(.+?)"?\s*$/m) || ['', ''])[1].trim();
+              const ownerField = (block.match(/owner:\s*"?(.+?)"?\s*$/m) || ['', ''])[1].trim();
+              return {
+                id: `ASM-${id.replace(/^ASM-/, '')}`,
+                status, expires, statement, owner: ownerField,
+              };
+            });
+
+            const expired = assumptions.filter(a => {
+              if (a.status !== 'active' || !a.expires) return false;
+              return new Date(a.expires + 'T00:00:00') < today;
+            });
+
+            if (expired.length === 0) {
+              core.info('No expired assumptions. No drift issues needed.');
+              return;
+            }
+
+            // Check existing open issues to avoid duplicates
+            const { data: existingIssues } = await github.rest.issues.listForRepo({
+              owner, repo,
+              state: 'open',
+              labels: 'drift,auto-detected',
+              per_page: 100,
+            });
+            const existingTitles = existingIssues.map(i => i.title);
+
+            for (const asm of expired) {
+              const title = `[DRIFT] Assumption expired: ${asm.id}`;
+              if (existingTitles.includes(title)) {
+                core.info(`Issue already exists for ${asm.id}, skipping.`);
+                continue;
+              }
+
+              const todayStr = today.toISOString().split('T')[0];
+              const body = [
+                '## Severity',
+                'medium',
+                '',
+                '## What Drifted',
+                `Assumption **${asm.id}** has expired.`,
+                '',
+                `> ${asm.statement}`,
+                '',
+                `Expiry date: \`${asm.expires}\``,
+                '',
+                '## Evidence',
+                `Auto-detected by [drift-auto-detect](.github/workflows/drift-auto-detect.yml) workflow on ${todayStr}.`,
+                "The assumption's `expires` field is past today's date while `status` is still `active`.",
+                '',
+                '## Affected',
+                `- Assumption: ${asm.id}`,
+                `- Owner: ${asm.owner}`,
+                '',
+                '## Action Required',
+                '1. Re-validate the assumption — is it still true?',
+                '2. If still true: update `expires` date in `assumptions.yaml`',
+                '3. If no longer true: set `status: expired`, create a DRIFT file in `coherence/drift/`, and open a patch PR',
+                '',
+                '## Status',
+                'open',
+                '',
+                '---',
+                '_Auto-detected by [CoherenceOps](https://github.com/8ryanWh1t3/CoherenceOps) drift auto-detection._',
+              ].join('\n');
+
+              const { data: issue } = await github.rest.issues.create({
+                owner, repo,
+                title,
+                body,
+                labels: ['drift', 'auto-detected'],
+              });
+              core.info(`Created drift issue #${issue.number} for ${asm.id}`);
+            }
