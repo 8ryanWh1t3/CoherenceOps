@@ -58,5 +58,5 @@ if [ ! -f "$INDEX" ]; then
 INDEXEOF
 fi
 
-echo "| ${DATE_FMT} | [${ID}](${ID}.md) | ${TITLE} | TBD | open |" >> "$INDEX"
+echo "| ${DATE_FMT} | [${ID}](${ID}.md) | ${TITLE} | low | open |" >> "$INDEX"
 echo "Updated: $INDEX"

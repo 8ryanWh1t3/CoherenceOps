@@ -1,11 +1,13 @@
 ## Summary
 
-<!-- What does this PR do? -->
+<!-- What does this PR do? 1-3 sentences. -->
 
 ## DLR Reference
 
-<!-- For major PRs: link the Decision Ledger Record -->
+<!-- Required for major PRs (label: major, 10+ files, or touches canon/intel). -->
 <!-- Example: coherence/decisions/DLR-0001.md or DLR-0001 -->
+
+DLR: <!-- coherence/decisions/DLR-NNNN.md or N/A -->
 
 ## Checklist
 
@@ -14,8 +16,13 @@
 - [ ] Canon changelog updated (if `coherence/canon/` files changed)
 - [ ] Drift signals formatted correctly (if adding new drift records)
 
+## Blast Radius
+
+<!-- What breaks if this is wrong? Scope: low / medium / high -->
+
 ## Waiver (if applicable)
 
-<!-- Only fill this if using the coherence:waiver label -->
+<!-- Only fill this section if using the coherence:waiver label -->
+<!-- Uncomment and fill both lines below: -->
 <!-- WAIVER: [reason for bypassing governance] -->
 <!-- WAIVER-EXPIRY: YYYY-MM-DD -->
