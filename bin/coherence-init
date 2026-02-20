@@ -7,7 +7,7 @@ set -euo pipefail
 
 TARGET="${1:-.}"
 
-echo "CoherenceOps Init v0.4.1"
+echo "CoherenceOps Init v0.4.2"
 echo "========================"
 echo "Target: $(cd "$TARGET" && pwd)"
 echo ""
@@ -316,7 +316,7 @@ EOF
 
 write_if_new "$TARGET/coherence/telemetry/coherence_score.json" <<'EOF'
 {
-  "version": "0.4.1",
+  "version": "0.4.2",
   "date": "YYYY-MM-DD",
   "score": 0,
   "components": {

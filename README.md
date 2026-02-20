@@ -93,6 +93,18 @@ git clone https://github.com/8ryanWh1t3/CoherenceOps.git /tmp/coherence-ops
 ```
 Bootstraps the full `coherence/` folder, templates, and labels into your existing repo. Zero dependencies.
 
+### Option E: Use the composite action
+
+```yaml
+# In your .github/workflows/coherence.yml
+- uses: 8ryanWh1t3/CoherenceOps/actions/check@v0.4.2
+  with:
+    coherence_root: coherence  # default
+```
+Pin to a tag (`@v0.4.2`), branch (`@main`), or commit SHA for stability.
+
+See [docs/CI_INSTALLATION.md](docs/CI_INSTALLATION.md) for the full installation contract (permissions, labels, branch protection).
+
 ## Demo Workflow (6 Steps)
 
 1. **Developer opens a PR** that changes core architecture
@@ -117,6 +129,7 @@ That's the loop: **Decide → Seal → Drift → Patch → Repeat.**
 | Principles | [docs/PRINCIPLES.md](docs/PRINCIPLES.md) |
 | Glossary | [docs/GLOSSARY.md](docs/GLOSSARY.md) |
 | 30-Min Training Outline | [docs/TRAINING_30MIN_OUTLINE.md](docs/TRAINING_30MIN_OUTLINE.md) |
+| CI Installation Contract | [docs/CI_INSTALLATION.md](docs/CI_INSTALLATION.md) |
 
 ## What's a "Major PR"?
 
@@ -161,4 +174,4 @@ Outputs are written to `telemetry_out/` (never into the sample pack). See [docs/
 
 ## Version
 
-v0.4.1 — See [CHANGELOG.md](CHANGELOG.md)
+v0.4.2 — See [CHANGELOG.md](CHANGELOG.md)

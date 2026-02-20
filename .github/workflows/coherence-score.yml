@@ -15,6 +15,11 @@ on:
         required: false
         default: ''
         type: string
+      commit_results:
+        description: 'Commit results to repo (set false for protected branches)'
+        required: false
+        default: 'true'
+        type: string
 
 permissions:
   contents: write
@@ -85,7 +90,8 @@ jobs:
               if (merged < since) continue;
 
               const labels = pr.labels.map(l => l.name);
-              const { data: files } = await github.rest.pulls.listFiles({
+              // Paginate to handle PRs with >100 changed files
+              const files = await github.paginate(github.rest.pulls.listFiles, {
                 owner, repo,
                 pull_number: pr.number,
                 per_page: 100,
@@ -123,14 +129,16 @@ jobs:
               const today = new Date();
               today.setHours(0, 0, 0, 0);
 
-              // Parse YAML (simple regex for predictable structure)
-              const blocks = content.split(/^\s*- id:/m).slice(1);
+              // Parse assumptions from YAML.
+              // Handles: empty files, assumptions: [], indented lists, extra fields.
+              const blocks = content.includes('- id:')
+                ? content.split(/^\s*- id:/m).slice(1) : [];
               for (const block of blocks) {
-                const status = (block.match(/status:\s*(.+)/m) || ['', ''])[1].trim();
+                const status = (block.match(/^\s*status:\s*(.+)/m) || ['', ''])[1].trim();
                 if (status !== 'active') continue;
                 totalActive++;
 
-                const expires = (block.match(/expires:\s*(.+)/m) || ['', ''])[1].trim();
+                const expires = (block.match(/^\s*expires:\s*(.+)/m) || ['', ''])[1].trim();
                 if (expires) {
                   const exp = new Date(expires + 'T00:00:00');
                   if (exp >= today) {
@@ -205,7 +213,7 @@ jobs:
             const today = new Date().toISOString().split('T')[0];
 
             const scoreObj = {
-              version: '0.4.1',
+              version: '0.4.2',
               date: today,
               score: totalScore,
               components: {
@@ -274,6 +282,7 @@ jobs:
             core.setOutput('summary', summary);
 
       - name: Commit Score
+        if: ${{ inputs.commit_results != 'false' }}
         env:
           TELEMETRY_OUT_DIR: ${{ steps.resolve.outputs.out_dir }}
         run: |
