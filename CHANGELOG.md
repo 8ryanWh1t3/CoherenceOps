@@ -4,6 +4,24 @@ All notable changes to CoherenceOps are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.4.2] - 2026-02-20
+
+### Added
+
+- `docs/CI_INSTALLATION.md` — single-page contract for permissions, labels, branch protection
+- `.github/workflows/ci-test.yml` — shellcheck + smoke tests for CoherenceOps' own scripts
+- `actions/check/action.yml` — composite action for `uses: 8ryanWh1t3/CoherenceOps/actions/check@v0.4.2`
+- `commit_results` input on score and rollup workflows — opt out of direct-to-main commits
+- README: Option E (composite action) + CI Installation link in Quick Links
+
+### Fixed
+
+- Assumptions parsing: anchored field regexes to prevent false matches inside multi-line strings
+- Assumptions parsing: handle `assumptions: []` (empty init default) without errors
+- Assumptions parsing: extract multi-line statements using YAML `>` / `|` folding
+- PR file listing: paginated via `github.paginate()` to handle PRs with >100 changed files
+- Shellcheck SC2059: replaced variable-in-format-string with positional `%s` args
+
 ## [0.4.1] - 2026-02-20
 
 ### Added

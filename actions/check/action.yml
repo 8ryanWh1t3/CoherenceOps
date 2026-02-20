@@ -1,0 +1,42 @@
+name: 'CoherenceOps Check'
+description: 'Run coherence gates locally against a repo'
+inputs:
+  coherence_root:
+    description: 'Coherence root directory'
+    required: false
+    default: 'coherence'
+outputs:
+  pass:
+    description: 'Whether all gates passed (true/false)'
+    value: ${{ steps.check.outputs.pass }}
+  summary:
+    description: 'Human-readable summary of gate results'
+    value: ${{ steps.check.outputs.summary }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Run coherence-check
+      id: check
+      shell: bash
+      env:
+        COHERENCE_ROOT: ${{ inputs.coherence_root }}
+      run: |
+        set +e
+        output=$("$GITHUB_ACTION_PATH/../../bin/coherence-check" 2>&1)
+        exit_code=$?
+        set -e
+
+        {
+          echo "summary<<EOF"
+          echo "$output"
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"
+
+        if [ "$exit_code" -eq 0 ]; then
+          echo "pass=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "pass=false" >> "$GITHUB_OUTPUT"
+        fi
+
+        echo "$output"
+        exit "$exit_code"

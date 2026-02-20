@@ -42,17 +42,41 @@ jobs:
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            // Parse assumptions (same pattern as coherence-gates.yml Gate 2)
+            // Parse assumptions from YAML.
+            // Handles: empty files, assumptions: [], indented lists, multi-line statements.
+            if (!content.includes('- id:')) {
+              core.info('No assumptions defined. Nothing to check.');
+              return;
+            }
             const blocks = content.split(/^\s*- id:/m).slice(1);
             const assumptions = blocks.map(block => {
               const id = (block.match(/^\s*(.+)/m) || ['', ''])[1].trim();
-              const status = (block.match(/status:\s*(.+)/m) || ['', ''])[1].trim();
-              const expires = (block.match(/expires:\s*(.+)/m) || ['', ''])[1].trim();
-              const statement = (block.match(/statement:\s*"?(.+?)"?\s*$/m) || ['', ''])[1].trim();
-              const ownerField = (block.match(/owner:\s*"?(.+?)"?\s*$/m) || ['', ''])[1].trim();
+              const status = (block.match(/^\s*status:\s*(.+)/m) || ['', ''])[1].trim();
+              const expires = (block.match(/^\s*expires:\s*(.+)/m) || ['', ''])[1].trim();
+              const owner = (block.match(/^\s*owner:\s*"?(.+?)"?\s*$/m) || ['', ''])[1].trim();
+              // Handle multi-line statements (> or | YAML folding)
+              let statement = '';
+              const stmtMatch = block.match(/^\s*statement:\s*(.+)/m);
+              if (stmtMatch) {
+                const val = stmtMatch[1].trim().replace(/^["']|["']$/g, '');
+                if (/^[>|][-+]?$/.test(val)) {
+                  const lines = block.split('\n');
+                  const idx = lines.findIndex(l => /^\s*statement:/.test(l));
+                  const keyIndent = (lines[idx].match(/^(\s*)/)||['',''])[1].length;
+                  const parts = [];
+                  for (let i = idx + 1; i < lines.length; i++) {
+                    const indent = (lines[i].match(/^(\s*)/)||['',''])[1].length;
+                    if (lines[i].trim() && indent <= keyIndent) break;
+                    if (lines[i].trim()) parts.push(lines[i].trim());
+                  }
+                  statement = parts.join(' ');
+                } else {
+                  statement = val;
+                }
+              }
               return {
-                id: `ASM-${id.replace(/^ASM-/, '')}`,
-                status, expires, statement, owner: ownerField,
+                id: id.startsWith('ASM-') ? id : `ASM-${id}`,
+                status, expires, statement, owner,
               };
             });
 

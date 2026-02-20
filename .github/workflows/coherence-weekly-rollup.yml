@@ -15,6 +15,11 @@ on:
         required: false
         default: ''
         type: string
+      commit_results:
+        description: 'Commit results to repo (set false for protected branches)'
+        required: false
+        default: 'true'
+        type: string
 
 permissions:
   contents: write
@@ -79,17 +84,39 @@ jobs:
             const asmPath = `${root}/intel/assumptions.yaml`;
             if (fs.existsSync(asmPath)) {
               const content = fs.readFileSync(asmPath, 'utf8');
-              const blocks = content.split(/^\s*- id:/m).slice(1);
+              // Parse assumptions from YAML.
+              // Handles: empty files, assumptions: [], indented lists, multi-line statements.
+              const blocks = content.includes('- id:')
+                ? content.split(/^\s*- id:/m).slice(1) : [];
               for (const block of blocks) {
                 const id = (block.match(/^\s*(.+)/m) || ['', ''])[1].trim();
-                const status = (block.match(/status:\s*(.+)/m) || ['', ''])[1].trim();
-                const expires = (block.match(/expires:\s*(.+)/m) || ['', ''])[1].trim();
-                const statement = (block.match(/statement:\s*"?(.+?)"?\s*$/m) || ['', ''])[1].trim();
+                const status = (block.match(/^\s*status:\s*(.+)/m) || ['', ''])[1].trim();
+                const expires = (block.match(/^\s*expires:\s*(.+)/m) || ['', ''])[1].trim();
+                // Handle multi-line statements (> or | YAML folding)
+                let statement = '';
+                const stmtMatch = block.match(/^\s*statement:\s*(.+)/m);
+                if (stmtMatch) {
+                  const val = stmtMatch[1].trim().replace(/^["']|["']$/g, '');
+                  if (/^[>|][-+]?$/.test(val)) {
+                    const lines = block.split('\n');
+                    const idx = lines.findIndex(l => /^\s*statement:/.test(l));
+                    const keyIndent = (lines[idx].match(/^(\s*)/)||['',''])[1].length;
+                    const parts = [];
+                    for (let i = idx + 1; i < lines.length; i++) {
+                      const indent = (lines[i].match(/^(\s*)/)||['',''])[1].length;
+                      if (lines[i].trim() && indent <= keyIndent) break;
+                      if (lines[i].trim()) parts.push(lines[i].trim());
+                    }
+                    statement = parts.join(' ');
+                  } else {
+                    statement = val;
+                  }
+                }
                 if (status !== 'active') continue;
                 totalActive++;
                 if (!expires) continue;
                 const exp = new Date(expires + 'T00:00:00');
-                const asmId = `ASM-${id.replace(/^ASM-/, '')}`;
+                const asmId = id.startsWith('ASM-') ? id : `ASM-${id}`;
                 if (exp < today) {
                   expiredCount++;
                   expiredList.push({ id: asmId, expires, statement });
@@ -175,6 +202,7 @@ jobs:
             fs.writeFileSync(`${outDir}/top_risks.md`, lines.join('\n'));
 
       - name: Commit Rollup
+        if: ${{ inputs.commit_results != 'false' }}
         env:
           TELEMETRY_OUT_DIR: ${{ steps.resolve.outputs.out_dir }}
         run: |

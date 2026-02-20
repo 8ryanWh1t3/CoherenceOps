@@ -53,5 +53,5 @@ if [ "$ERRORS" -gt 0 ]; then
   echo "Ensure COHERENCE_ROOT points to a directory with intel/assumptions.yaml and drift/."
   exit 1
 else
-  printf "${GRN}Root is valid.${RST}\n"
+  printf '%bRoot is valid.%b\n' "${GRN}" "${RST}"
 fi

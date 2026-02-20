@@ -30,7 +30,7 @@ result() {
 # ── Resolve COHERENCE_ROOT ──
 COHERENCE_ROOT="${COHERENCE_ROOT:-coherence}"
 
-echo "CoherenceOps Check v0.4.1"
+echo "CoherenceOps Check v0.4.2"
 echo "========================="
 if [ "$COHERENCE_ROOT" != "coherence" ]; then
   echo "  COHERENCE_ROOT: ${COHERENCE_ROOT}"
@@ -41,6 +41,8 @@ echo ""
 ASM_FILE="${COHERENCE_ROOT}/intel/assumptions.yaml"
 if [ ! -f "$ASM_FILE" ]; then
   result "Assumption Expiry" "skip" "No assumptions.yaml found"
+elif ! grep -q '^\s*- id:' "$ASM_FILE"; then
+  result "Assumption Expiry" "skip" "No assumptions defined (empty or assumptions: [])"
 else
   TODAY=$(date +%Y-%m-%d)
   # macOS: date -v+14d, Linux: date -d "+14 days"
@@ -163,9 +165,9 @@ echo "========================="
 printf "Results: ${GRN}%d pass${RST}, ${YEL}%d warn${RST}, ${RED}%d fail${RST}, ${GRY}%d skip${RST}\n" "$PASS" "$WARN" "$FAIL" "$SKIP"
 
 if [ "$FAIL" -gt 0 ]; then
-  printf "${RED}Coherence check failed.${RST}\n"
+  printf '%bCoherence check failed.%b\n' "${RED}" "${RST}"
   exit 1
 else
-  printf "${GRN}Coherence check passed.${RST}\n"
+  printf '%bCoherence check passed.%b\n' "${GRN}" "${RST}"
   exit 0
 fi

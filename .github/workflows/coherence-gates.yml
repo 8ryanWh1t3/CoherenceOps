@@ -30,7 +30,8 @@ jobs:
             const labels = pr.labels.map(l => l.name);
             const hasMajorLabel = labels.includes('major');
 
-            const { data: files } = await github.rest.pulls.listFiles({
+            // Paginate to handle PRs with >100 changed files
+            const files = await github.paginate(github.rest.pulls.listFiles, {
               owner, repo,
               pull_number: pr.number,
               per_page: 100,
@@ -100,14 +101,20 @@ jobs:
             const warnDate = new Date(today);
             warnDate.setDate(warnDate.getDate() + 14);
 
-            // Parse assumptions from YAML (simple regex for predictable structure)
+            // Parse assumptions from YAML.
+            // Handles: empty files, assumptions: [], indented lists, extra fields.
+            // Required keys per entry: id, status, expires.
+            if (!content.includes('- id:')) {
+              core.setOutput('status', 'skip');
+              core.setOutput('message', 'No assumptions defined.');
+              return;
+            }
             const blocks = content.split(/^\s*- id:/m).slice(1);
             const assumptions = blocks.map(block => {
               const id = (block.match(/^\s*(.+)/m) || ['', ''])[1].trim();
-              const status = (block.match(/status:\s*(.+)/m) || ['', ''])[1].trim();
-              const expires = (block.match(/expires:\s*(.+)/m) || ['', ''])[1].trim();
-              const statement = (block.match(/statement:\s*"?(.+?)"?\s*$/m) || ['', ''])[1].trim();
-              return { id: `ASM-${id.replace(/^ASM-/, '')}`, status, expires, statement };
+              const status = (block.match(/^\s*status:\s*(.+)/m) || ['', ''])[1].trim();
+              const expires = (block.match(/^\s*expires:\s*(.+)/m) || ['', ''])[1].trim();
+              return { id: id.startsWith('ASM-') ? id : `ASM-${id}`, status, expires };
             });
 
             const active = assumptions.filter(a => a.status === 'active');
@@ -160,7 +167,8 @@ jobs:
             const { owner, repo } = context.repo;
             const pr = context.payload.pull_request;
 
-            const { data: files } = await github.rest.pulls.listFiles({
+            // Paginate to handle PRs with >100 changed files
+            const files = await github.paginate(github.rest.pulls.listFiles, {
               owner, repo,
               pull_number: pr.number,
               per_page: 100,
@@ -198,7 +206,8 @@ jobs:
             const { owner, repo } = context.repo;
             const pr = context.payload.pull_request;
 
-            const { data: files } = await github.rest.pulls.listFiles({
+            // Paginate to handle PRs with >100 changed files
+            const files = await github.paginate(github.rest.pulls.listFiles, {
               owner, repo,
               pull_number: pr.number,
               per_page: 100,

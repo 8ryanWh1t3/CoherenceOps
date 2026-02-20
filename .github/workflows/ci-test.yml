@@ -1,0 +1,99 @@
+name: CI Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run shellcheck
+        run: shellcheck bin/*
+
+  smoke-test:
+    name: Smoke Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Init fresh repo and verify structure
+        run: |
+          tmp=$(mktemp -d)
+          cd "$tmp"
+          git init
+          git config user.name "test"
+          git config user.email "test@test.com"
+          "$GITHUB_WORKSPACE/bin/coherence-init" .
+
+          # Verify all expected paths exist
+          test -f coherence/intel/assumptions.yaml
+          test -f coherence/intel/claims.yaml
+          test -d coherence/drift
+          test -d coherence/decisions
+          test -d coherence/canon
+          echo "PASS: coherence-init created expected structure"
+
+      - name: Check parses empty assumptions (init default)
+        run: |
+          tmp=$(mktemp -d)
+          cd "$tmp"
+          git init
+          git config user.name "test"
+          git config user.email "test@test.com"
+          "$GITHUB_WORKSPACE/bin/coherence-init" .
+          "$GITHUB_WORKSPACE/bin/coherence-check"
+          echo "PASS: coherence-check handles assumptions: []"
+
+      - name: Check parses populated assumptions
+        run: |
+          tmp=$(mktemp -d)
+          cd "$tmp"
+          git init
+          git config user.name "test"
+          git config user.email "test@test.com"
+          "$GITHUB_WORKSPACE/bin/coherence-init" .
+
+          # Replace empty assumptions with a real entry
+          cat > coherence/intel/assumptions.yaml << 'YAML'
+          assumptions:
+            - id: ASM-0001
+              statement: "Test assumption for CI"
+              status: active
+              expires: 2099-12-31
+              owner: "@ci"
+          YAML
+
+          "$GITHUB_WORKSPACE/bin/coherence-check"
+          echo "PASS: coherence-check parses populated assumptions"
+
+      - name: Validate coherence-root
+        run: |
+          "$GITHUB_WORKSPACE/bin/coherence-root"
+          echo "PASS: coherence-root validates default root"
+
+      - name: Sample mode check
+        run: |
+          # Sample data has expired assumptions, so check exits 1 — that's expected
+          COHERENCE_ROOT=sample_data/game_studio_aaa "$GITHUB_WORKSPACE/bin/coherence-check" || true
+          echo "PASS: coherence-check runs in sample mode"
+
+      - name: Safety guards block sample mode writes
+        run: |
+          # coherence-new-dlr should refuse when COHERENCE_ROOT != coherence
+          if COHERENCE_ROOT=sample_data/game_studio_aaa "$GITHUB_WORKSPACE/bin/coherence-new-dlr" 2>&1; then
+            echo "FAIL: coherence-new-dlr should have refused"
+            exit 1
+          fi
+          echo "PASS: coherence-new-dlr correctly refused"
+
+          # coherence-new-drift should refuse too
+          if COHERENCE_ROOT=sample_data/game_studio_aaa "$GITHUB_WORKSPACE/bin/coherence-new-drift" 2>&1; then
+            echo "FAIL: coherence-new-drift should have refused"
+            exit 1
+          fi
+          echo "PASS: coherence-new-drift correctly refused"
