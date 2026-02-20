@@ -1,13 +1,13 @@
 {
   "version": "0.4.1",
   "date": "2026-02-20",
-  "score": 85,
+  "score": 90,
   "components": {
     "dlr_coverage": {
       "value": 100,
       "weight": 25,
       "points": 25,
-      "detail": "1/1 major PRs have DLR"
+      "detail": "2/2 major PRs have DLR"
     },
     "assumption_currency": {
       "value": 100,
@@ -16,10 +16,10 @@
       "detail": "0/2 assumptions expired"
     },
     "drift_health": {
-      "value": 80,
+      "value": 100,
       "weight": 25,
-      "points": 20,
-      "detail": "1 open drift signal (seed)"
+      "points": 25,
+      "detail": "No open drift signals"
     },
     "why_retrieval": {
       "value": 60,
