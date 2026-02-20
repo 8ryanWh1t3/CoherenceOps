@@ -20,11 +20,14 @@
 - CODEOWNERS integration for canon files
 - Coherence score badge for README
 - Label bootstrap (auto-create `major`, `assumption-waiver`, `coherence-dashboard`)
+- `coherence init` setup script (bootstrap folder structure + templates into any repo)
+- `coherence check` local validator (run gates locally before pushing)
 
 ## v0.4.0
 - Cross-repo coherence federation (shared canon references)
 - Historical score trending via commit metadata
-- Reusable composite actions for adoption by other repos
+- Reusable composite actions (`uses: 8ryanWh1t3/CoherenceOps/.github/actions/...`)
+- Release automation (tag + GitHub Release from CI)
 
 ## Release Checklist
 
