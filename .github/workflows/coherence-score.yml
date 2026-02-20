@@ -1,0 +1,311 @@
+name: Coherence Score
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Monday 9:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  calculate-score:
+    name: Calculate Coherence Score
+    runs-on: ubuntu-latest
+    outputs:
+      score: ${{ steps.calc.outputs.score }}
+      summary: ${{ steps.calc.outputs.summary }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Calculate Score
+        id: calc
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const { owner, repo } = context.repo;
+
+            // ── Component 1: DLR Coverage (25 pts) ──
+            // Count major PRs in the last 90 days
+            const since = new Date();
+            since.setDate(since.getDate() - 90);
+
+            let majorPRs = 0;
+            let majorWithDLR = 0;
+
+            const prs = await github.paginate(github.rest.pulls.list, {
+              owner, repo,
+              state: 'closed',
+              sort: 'updated',
+              direction: 'desc',
+              per_page: 100,
+            });
+
+            for (const pr of prs) {
+              if (!pr.merged_at) continue;
+              const merged = new Date(pr.merged_at);
+              if (merged < since) continue;
+
+              const labels = pr.labels.map(l => l.name);
+              const { data: files } = await github.rest.pulls.listFiles({
+                owner, repo,
+                pull_number: pr.number,
+                per_page: 100,
+              });
+              const paths = files.map(f => f.filename);
+
+              const isMajor = labels.includes('major') ||
+                paths.length > 10 ||
+                paths.some(p => p.startsWith('coherence/canon/') || p.startsWith('coherence/intel/'));
+
+              if (!isMajor) continue;
+              majorPRs++;
+
+              const body = pr.body || '';
+              if (body.match(/coherence\/decisions\/DLR-\d{4}\.md/)) {
+                majorWithDLR++;
+              }
+            }
+
+            const dlrCoverage = majorPRs === 0 ? 1.0 : majorWithDLR / majorPRs;
+            const dlrPts = Math.round(dlrCoverage * 25);
+            const dlrDetail = majorPRs === 0
+              ? 'No major PRs in last 90 days'
+              : `${majorWithDLR}/${majorPRs} major PRs have DLR`;
+
+            // ── Component 2: Assumption Currency (25 pts) ──
+            let assumptionCurrency = 1.0;
+            let totalActive = 0;
+            let activeUnexpired = 0;
+            let assumptionDetail = 'No assumptions.yaml found';
+
+            const assumptionsPath = 'coherence/intel/assumptions.yaml';
+            if (fs.existsSync(assumptionsPath)) {
+              const content = fs.readFileSync(assumptionsPath, 'utf8');
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+
+              // Parse YAML (simple regex for predictable structure)
+              const blocks = content.split(/^\s*- id:/m).slice(1);
+              for (const block of blocks) {
+                const status = (block.match(/status:\s*(.+)/m) || ['', ''])[1].trim();
+                if (status !== 'active') continue;
+                totalActive++;
+
+                const expires = (block.match(/expires:\s*(.+)/m) || ['', ''])[1].trim();
+                if (expires) {
+                  const exp = new Date(expires + 'T00:00:00');
+                  if (exp >= today) {
+                    activeUnexpired++;
+                  }
+                } else {
+                  activeUnexpired++; // no expiry = not expired
+                }
+              }
+
+              if (totalActive === 0) {
+                assumptionCurrency = 1.0;
+                assumptionDetail = 'No active assumptions';
+              } else {
+                assumptionCurrency = activeUnexpired / totalActive;
+                const expiredCount = totalActive - activeUnexpired;
+                assumptionDetail = `${expiredCount}/${totalActive} assumptions expired`;
+              }
+            }
+
+            const assumptionPts = Math.round(assumptionCurrency * 25);
+
+            // ── Component 3: Drift Health (25 pts) ──
+            let openDriftCount = 0;
+
+            const driftDir = 'coherence/drift';
+            if (fs.existsSync(driftDir)) {
+              const driftFiles = fs.readdirSync(driftDir)
+                .filter(f => /^DRIFT-\d+\.md$/.test(f));
+
+              for (const df of driftFiles) {
+                const content = fs.readFileSync(`${driftDir}/${df}`, 'utf8');
+                // Check if status is open (look in ## Status section)
+                const statusMatch = content.match(/## Status\s*\n+\s*(.+)/);
+                if (statusMatch) {
+                  const status = statusMatch[1].trim().toLowerCase();
+                  if (status === 'open') {
+                    openDriftCount++;
+                  }
+                }
+              }
+            }
+
+            const driftPenalty = openDriftCount * 5;
+            const driftPts = Math.max(0, 25 - driftPenalty);
+            const driftDetail = openDriftCount === 0
+              ? 'No open drift signals'
+              : `${openDriftCount} open drift signal(s)`;
+
+            // ── Component 4: Why Retrieval (25 pts) ──
+            // Preserve existing manual measurement if available
+            let whyRetrievalPts = 15; // default
+            let whyRetrievalValue = 60;
+            let whyDetail = 'Default estimate (no measurement)';
+
+            const scorePath = 'coherence/telemetry/coherence_score.json';
+            if (fs.existsSync(scorePath)) {
+              try {
+                const existing = JSON.parse(fs.readFileSync(scorePath, 'utf8'));
+                if (existing.components && existing.components.why_retrieval) {
+                  whyRetrievalPts = existing.components.why_retrieval.points;
+                  whyRetrievalValue = existing.components.why_retrieval.value;
+                  whyDetail = existing.components.why_retrieval.detail;
+                }
+              } catch {
+                // keep defaults
+              }
+            }
+
+            // ── Write Score ──
+            const totalScore = dlrPts + assumptionPts + driftPts + whyRetrievalPts;
+            const today = new Date().toISOString().split('T')[0];
+
+            const scoreObj = {
+              version: '0.2.0',
+              date: today,
+              score: totalScore,
+              components: {
+                dlr_coverage: {
+                  value: Math.round(dlrCoverage * 100),
+                  weight: 25,
+                  points: dlrPts,
+                  detail: dlrDetail,
+                },
+                assumption_currency: {
+                  value: Math.round(assumptionCurrency * 100),
+                  weight: 25,
+                  points: assumptionPts,
+                  detail: assumptionDetail,
+                },
+                drift_health: {
+                  value: Math.max(0, 100 - openDriftCount * 20),
+                  weight: 25,
+                  points: driftPts,
+                  detail: driftDetail,
+                },
+                why_retrieval: {
+                  value: whyRetrievalValue,
+                  weight: 25,
+                  points: whyRetrievalPts,
+                  detail: whyDetail,
+                },
+              },
+            };
+
+            fs.writeFileSync(scorePath, JSON.stringify(scoreObj, null, 2) + '\n');
+
+            // Set outputs for dashboard job
+            core.setOutput('score', totalScore);
+
+            const rating = totalScore >= 90 ? 'Excellent'
+              : totalScore >= 70 ? 'Good'
+              : totalScore >= 50 ? 'Needs Attention'
+              : 'Critical';
+
+            const summary = [
+              `**Coherence Score: ${totalScore}/100** (${rating})`,
+              '',
+              '| Component | Points | Detail |',
+              '|-----------|--------|--------|',
+              `| DLR Coverage | ${dlrPts}/25 | ${dlrDetail} |`,
+              `| Assumption Currency | ${assumptionPts}/25 | ${assumptionDetail} |`,
+              `| Drift Health | ${driftPts}/25 | ${driftDetail} |`,
+              `| Why Retrieval | ${whyRetrievalPts}/25 | ${whyDetail} |`,
+            ].join('\n');
+
+            core.setOutput('summary', summary);
+
+      - name: Commit Score
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add coherence/telemetry/coherence_score.json
+          git diff --staged --quiet && echo "No changes to commit" && exit 0
+          git commit -m "chore: update coherence score [skip ci]"
+          git push
+
+  dashboard:
+    name: Update Dashboard Issue
+    needs: calculate-score
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Dashboard
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const score = parseInt('${{ needs.calculate-score.outputs.score }}') || 0;
+            const summary = `${{ needs.calculate-score.outputs.summary }}`;
+
+            const rating = score >= 90 ? ':green_circle: Excellent'
+              : score >= 70 ? ':large_blue_circle: Good'
+              : score >= 50 ? ':yellow_circle: Needs Attention'
+              : ':red_circle: Critical';
+
+            const body = [
+              '# Coherence Dashboard',
+              '',
+              `> Last updated: ${new Date().toISOString().split('T')[0]}`,
+              '',
+              `## ${rating}`,
+              '',
+              summary,
+              '',
+              '## Actions',
+              '',
+              score < 70 ? '- [ ] Review expired assumptions in `coherence/intel/assumptions.yaml`' : '',
+              score < 70 ? '- [ ] Triage open drift signals in `coherence/drift/`' : '',
+              score < 90 ? '- [ ] Ensure major PRs include DLR links' : '',
+              score >= 90 ? '- All clear! Maintain current governance practices.' : '',
+              '',
+              '---',
+              '_Updated automatically by [Coherence Score](.github/workflows/coherence-score.yml) workflow._',
+              '_Powered by [CoherenceOps](https://github.com/8ryanWh1t3/CoherenceOps)_',
+            ].filter(line => line !== '').join('\n');
+
+            // Find existing dashboard issue
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner, repo,
+              state: 'open',
+              labels: 'coherence-dashboard',
+              per_page: 1,
+            });
+
+            if (issues.length > 0) {
+              await github.rest.issues.update({
+                owner, repo,
+                issue_number: issues[0].number,
+                body,
+              });
+              core.info(`Updated dashboard issue #${issues[0].number}`);
+            } else {
+              const { data: issue } = await github.rest.issues.create({
+                owner, repo,
+                title: 'Coherence Dashboard',
+                body,
+                labels: ['coherence-dashboard'],
+              });
+              // Pin the issue
+              try {
+                await github.graphql(`
+                  mutation {
+                    pinIssue(input: { issueId: "${issue.node_id}" }) {
+                      issue { id }
+                    }
+                  }
+                `);
+                core.info(`Created and pinned dashboard issue #${issue.number}`);
+              } catch (e) {
+                core.warning(`Created issue #${issue.number} but could not pin: ${e.message}`);
+              }
+            }

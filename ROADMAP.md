@@ -1,17 +1,19 @@
 # Roadmap
 
-## v0.1.0 (current)
-- Folder structure and templates
-- Seed DLR, drift, canon, intel files
-- Documentation and training assets
-- PR and issue templates
-- Coherence Score specification
+## v0.2.0 (current)
+- [x] GitHub Actions: DLR enforcement on major PRs
+- [x] GitHub Actions: assumption expiry warnings
+- [x] GitHub Actions: canon changelog enforcement
+- [x] GitHub Actions: drift format validation
+- [x] Automated coherence score calculation
+- [x] Dashboard issue (auto-generated summary)
 
-## v0.2.0
-- GitHub Actions: DLR enforcement on major PRs
-- GitHub Actions: assumption expiry warnings
-- Automated coherence score calculation
-- Dashboard issue (auto-generated summary)
+## v0.1.0
+- [x] Folder structure and templates
+- [x] Seed DLR, drift, canon, intel files
+- [x] Documentation and training assets
+- [x] PR and issue templates
+- [x] Coherence Score specification
 
 ## v0.3.0
 - Canon diff detection (alert when canon files change without changelog entry)
