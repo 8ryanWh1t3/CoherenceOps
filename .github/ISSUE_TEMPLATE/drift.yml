@@ -1,0 +1,63 @@
+name: Drift Signal
+description: Report that something has drifted from a recorded decision, assumption, or canon entry
+title: "[DRIFT] "
+labels: ["drift"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to report drift. After triage, create the drift file in `coherence/drift/`.
+
+  - type: input
+    id: drift-id
+    attributes:
+      label: Drift ID
+      description: "Next available DRIFT number"
+      placeholder: "DRIFT-0002"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Low
+        - Medium
+        - Critical
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-drifted
+    attributes:
+      label: What Drifted
+      description: "Describe what no longer matches the recorded state"
+      placeholder: "The assumption ASM-0001 stated X, but we now observe Y..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: "How was this detected? Links, data, observations."
+    validations:
+      required: true
+
+  - type: input
+    id: affected
+    attributes:
+      label: Affected Records
+      description: "Which DLRs, assumptions, or canon entries are affected?"
+      placeholder: "DLR-0001, ASM-0001, canon/architecture.md"
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-patch
+    attributes:
+      label: Proposed Patch
+      description: "What should be done to restore coherence?"
+    validations:
+      required: true

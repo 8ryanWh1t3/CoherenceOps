@@ -1,0 +1,75 @@
+name: Decision Record (DLR)
+description: Propose a new decision that needs to be recorded
+title: "[DLR] "
+labels: ["decision", "major"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to propose a decision that needs a formal record.
+        After this issue is discussed and approved, create the DLR file in `coherence/decisions/`.
+
+  - type: input
+    id: dlr-id
+    attributes:
+      label: DLR ID
+      description: "Next available DLR number"
+      placeholder: "DLR-0002"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: "What problem are we solving? Why now?"
+      placeholder: "We need to decide..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: options
+    attributes:
+      label: Options Considered
+      description: "List the options with pros and cons"
+      value: |
+        1. **Option A** —
+        2. **Option B** —
+        3. **Option C** —
+    validations:
+      required: true
+
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recommendation
+      description: "Which option do you recommend and why?"
+    validations:
+      required: true
+
+  - type: input
+    id: assumptions
+    attributes:
+      label: Assumptions
+      description: "Which assumptions does this depend on?"
+      placeholder: "ASM-0001, ASM-0002"
+
+  - type: dropdown
+    id: blast-radius
+    attributes:
+      label: Blast Radius
+      options:
+        - Low
+        - Medium
+        - High
+    validations:
+      required: true
+
+  - type: input
+    id: owner
+    attributes:
+      label: Decision Owner
+      description: "Who is accountable post-merge?"
+      placeholder: "@handle"
+    validations:
+      required: true

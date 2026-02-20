@@ -1,0 +1,24 @@
+# Claims — factual assertions with provenance
+#
+# Each claim has:
+#   id:          unique identifier (CLM-NNNN)
+#   statement:   what is being claimed
+#   source:      where this comes from
+#   confidence:  low | medium | high
+#   recorded:    date added
+#   recorder:    who recorded it
+
+claims:
+  - id: CLM-0001
+    statement: "GitHub renders Mermaid natively in Markdown files"
+    source: "GitHub docs — https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams"
+    confidence: high
+    recorded: 2026-02-20
+    recorder: "@8ryanWh1t3"
+
+  - id: CLM-0002
+    statement: "YAML issue forms are supported in public GitHub repos"
+    source: "GitHub docs — https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms"
+    confidence: high
+    recorded: 2026-02-20
+    recorder: "@8ryanWh1t3"

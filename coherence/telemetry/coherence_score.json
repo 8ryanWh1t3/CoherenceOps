@@ -1,0 +1,31 @@
+{
+  "version": "0.1.0",
+  "date": "2026-02-20",
+  "score": 85,
+  "components": {
+    "dlr_coverage": {
+      "value": 100,
+      "weight": 25,
+      "points": 25,
+      "detail": "1/1 major PRs have DLR"
+    },
+    "assumption_currency": {
+      "value": 100,
+      "weight": 25,
+      "points": 25,
+      "detail": "0/2 assumptions expired"
+    },
+    "drift_health": {
+      "value": 80,
+      "weight": 25,
+      "points": 20,
+      "detail": "1 open drift signal (seed)"
+    },
+    "why_retrieval": {
+      "value": 60,
+      "weight": 25,
+      "points": 15,
+      "detail": "Estimated 45s median (manual measurement)"
+    }
+  }
+}

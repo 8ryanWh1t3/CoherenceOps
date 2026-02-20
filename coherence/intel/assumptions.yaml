@@ -1,0 +1,30 @@
+# Assumptions — beliefs with half-life and expiry
+#
+# Each assumption has:
+#   id:          unique identifier (ASM-NNNN)
+#   statement:   what is being assumed
+#   basis:       why we believe this
+#   half_life:   period after which to re-validate (e.g., "90d", "6mo")
+#   expires:     hard expiry date (YYYY-MM-DD)
+#   status:      active | expired | validated | retired
+#   owner:       who owns re-validation
+#   recorded:    date added
+
+assumptions:
+  - id: ASM-0001
+    statement: "Teams will adopt folder-based governance if templates are pre-filled"
+    basis: "Observation from internal pilots; GitHub new-file links reduce friction"
+    half_life: "90d"
+    expires: 2026-05-20
+    status: active
+    owner: "@8ryanWh1t3"
+    recorded: 2026-02-20
+
+  - id: ASM-0002
+    statement: "Coherence Score > 80 correlates with faster onboarding"
+    basis: "Hypothesis based on why-retrieval KPI design"
+    half_life: "6mo"
+    expires: 2026-08-20
+    status: active
+    owner: "@8ryanWh1t3"
+    recorded: 2026-02-20
