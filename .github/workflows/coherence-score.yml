@@ -171,7 +171,7 @@ jobs:
             const today = new Date().toISOString().split('T')[0];
 
             const scoreObj = {
-              version: '0.2.0',
+              version: '0.3.0',
               date: today,
               score: totalScore,
               components: {
@@ -204,6 +204,20 @@ jobs:
 
             fs.writeFileSync(scorePath, JSON.stringify(scoreObj, null, 2) + '\n');
 
+            // Write badge JSON for shields.io endpoint
+            const badgeColor = totalScore >= 90 ? 'brightgreen'
+              : totalScore >= 70 ? 'green'
+              : totalScore >= 50 ? 'yellow'
+              : 'red';
+            const badgeObj = {
+              schemaVersion: 1,
+              label: 'coherence',
+              message: `${totalScore}/100`,
+              color: badgeColor,
+            };
+            fs.writeFileSync('coherence/telemetry/coherence_badge.json',
+              JSON.stringify(badgeObj, null, 2) + '\n');
+
             // Set outputs for dashboard job
             core.setOutput('score', totalScore);
 
@@ -229,7 +243,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add coherence/telemetry/coherence_score.json
+          git add coherence/telemetry/coherence_score.json coherence/telemetry/coherence_badge.json
           git diff --staged --quiet && echo "No changes to commit" && exit 0
           git commit -m "chore: update coherence score [skip ci]"
           git push

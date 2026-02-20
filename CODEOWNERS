@@ -1,0 +1,9 @@
+# CoherenceOps CODEOWNERS
+# Canon files require review from the Canon Steward
+coherence/canon/    @8ryanWh1t3
+
+# Intel files (claims, assumptions) require review
+coherence/intel/    @8ryanWh1t3
+
+# Governance workflows require maintainer review
+.github/workflows/  @8ryanWh1t3

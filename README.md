@@ -2,6 +2,8 @@
 
 **Coherence is infrastructure, not culture.**
 
+[![Coherence Score](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/8ryanWh1t3/CoherenceOps/main/coherence/telemetry/coherence_badge.json&style=flat-square)](coherence/telemetry/coherence_score.json)
+
 GitHub-native governance for any repo. Track truth, record reasoning, protect memory, detect drift, ship patches.
 
 ---
@@ -84,6 +86,13 @@ git submodule add https://github.com/ORG/CoherenceOps.git coherence-ops
 ### Option C: Use as a template
 Click **Use this template** on GitHub to create a new repo with the full structure.
 
+### Option D: Run `coherence-init`
+```bash
+git clone https://github.com/8ryanWh1t3/CoherenceOps.git /tmp/coherence-ops
+/tmp/coherence-ops/bin/coherence-init .
+```
+Bootstraps the full `coherence/` folder, templates, and labels into your existing repo. Zero dependencies.
+
 ## Demo Workflow (6 Steps)
 
 1. **Developer opens a PR** that changes core architecture
@@ -132,4 +141,4 @@ See [actions/COHERENCE_SCORE_SPEC.md](actions/COHERENCE_SCORE_SPEC.md) for the f
 
 ## Version
 
-v0.1.0 — See [CHANGELOG.md](CHANGELOG.md)
+v0.3.0 — See [CHANGELOG.md](CHANGELOG.md)

@@ -1,0 +1,392 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# coherence-init — Bootstrap CoherenceOps into any repo
+# Usage: ./coherence-init [target-dir]
+#        Default target-dir is the current directory.
+
+TARGET="${1:-.}"
+
+echo "CoherenceOps Init v0.3.0"
+echo "========================"
+echo "Target: $(cd "$TARGET" && pwd)"
+echo ""
+
+# Verify target is a git repo
+if [ ! -d "$TARGET/.git" ]; then
+  echo "ERROR: $TARGET is not a git repository."
+  echo "Run 'git init' first, then re-run coherence-init."
+  exit 1
+fi
+
+# --- Create directories ---
+echo "Creating directory structure..."
+
+dirs=(
+  "$TARGET/coherence/intel/provenance"
+  "$TARGET/coherence/decisions"
+  "$TARGET/coherence/canon"
+  "$TARGET/coherence/drift"
+  "$TARGET/coherence/telemetry"
+  "$TARGET/.github/ISSUE_TEMPLATE"
+  "$TARGET/.github/PULL_REQUEST_TEMPLATE"
+  "$TARGET/.github/workflows"
+)
+
+for d in "${dirs[@]}"; do
+  mkdir -p "$d"
+done
+echo "  Directories created."
+
+# --- Helper: write file only if it doesn't exist ---
+write_if_new() {
+  local file="$1"
+  if [ -f "$file" ]; then
+    echo "  ~ $file (exists, skipping)"
+    return 0
+  fi
+  cat > "$file"
+  echo "  + $file"
+}
+
+# ──────────────────────────────────────────────
+# coherence/intel/
+# ──────────────────────────────────────────────
+
+write_if_new "$TARGET/coherence/intel/README.md" <<'EOF'
+# IntelOps (Truth)
+
+What the team believes to be true, and why.
+
+## Files
+
+| File | Purpose |
+|------|---------|
+| [claims.yaml](claims.yaml) | Factual assertions with provenance and confidence |
+| [assumptions.yaml](assumptions.yaml) | Beliefs with half-life and expiry dates |
+| [provenance/](provenance/) | Supporting evidence and source documents |
+
+## Rules
+
+- Every claim needs a `source` and `confidence` (low / medium / high)
+- Every assumption needs an `expires` date and `half_life`
+- When an assumption expires, open a Drift signal
+EOF
+
+write_if_new "$TARGET/coherence/intel/claims.yaml" <<'EOF'
+# Claims — factual assertions with provenance
+#
+# Each claim has:
+#   id:          unique identifier (CLM-NNNN)
+#   statement:   what is being claimed
+#   source:      where this comes from
+#   confidence:  low | medium | high
+#   recorded:    date added
+#   recorder:    who recorded it
+
+claims: []
+EOF
+
+write_if_new "$TARGET/coherence/intel/assumptions.yaml" <<'EOF'
+# Assumptions — beliefs with half-life and expiry
+#
+# Each assumption has:
+#   id:          unique identifier (ASM-NNNN)
+#   statement:   what is being assumed
+#   basis:       why we believe this
+#   half_life:   period after which to re-validate (e.g., "90d", "6mo")
+#   expires:     hard expiry date (YYYY-MM-DD)
+#   status:      active | expired | validated | retired
+#   owner:       who owns re-validation
+#   recorded:    date added
+
+assumptions: []
+EOF
+
+write_if_new "$TARGET/coherence/intel/provenance/README.md" <<'EOF'
+# Provenance
+
+Supporting evidence for claims in `../claims.yaml`.
+
+## Convention
+
+- One file per claim: `CLM-0001.md`, `CLM-0002.md`, etc.
+- Include: source URL, date accessed, relevant excerpt, confidence rationale
+- Link back to the claim ID in `claims.yaml`
+EOF
+
+# ──────────────────────────────────────────────
+# coherence/decisions/
+# ──────────────────────────────────────────────
+
+write_if_new "$TARGET/coherence/decisions/README.md" <<'EOF'
+# ReOps (Reasoning)
+
+Decision Ledger Records — what was decided, why, and what was traded off.
+
+## Files
+
+| File | Purpose |
+|------|---------|
+| [DLR_TEMPLATE.md](DLR_TEMPLATE.md) | Template for new decision records |
+
+## Rules
+
+- Major PRs require a DLR before merge
+- Every DLR must name an Owner
+- Every DLR must reference assumptions (by ASM-ID) it depends on
+- When an assumption expires, the DLR owner is notified via drift signal
+EOF
+
+write_if_new "$TARGET/coherence/decisions/DLR_TEMPLATE.md" <<'EOF'
+# DLR-NNNN: [Title]
+
+## Status
+Draft | Proposed | Accepted | Superseded
+
+## Context
+What problem are we solving? Why now?
+
+## Options Considered
+1. **Option A** — ...
+2. **Option B** — ...
+3. **Option C** — ...
+
+## Decision
+What we chose and why. Reference the winning option.
+
+## Trade-offs
+What we gave up by choosing this option. What risks remain.
+
+## Assumptions
+- ASM-NNNN: [statement]
+- ASM-NNNN: [statement]
+
+## Blast Radius
+Scope of impact if this decision is wrong. Which systems, users, or commitments are affected.
+
+## Rollback
+How to reverse this decision. Concrete steps, not "revert the PR."
+
+## Owner
+@handle — accountable for this decision post-merge and for responding to drift signals.
+
+## Date
+YYYY-MM-DD
+EOF
+
+# ──────────────────────────────────────────────
+# coherence/canon/
+# ──────────────────────────────────────────────
+
+write_if_new "$TARGET/coherence/canon/README.md" <<'EOF'
+# FranOps (Memory / Canon)
+
+Protected institutional memory. These files represent commitments that outlive any individual.
+
+## Files
+
+| File | Purpose |
+|------|---------|
+| [mission.md](mission.md) | Why this project exists |
+| [architecture.md](architecture.md) | Core architectural commitments |
+| [public-commitments.md](public-commitments.md) | Promises made to users, partners, or stakeholders |
+| [changelog.md](changelog.md) | Every change to canon, with date and rationale |
+
+## Rules
+
+- **All canon changes require a changelog entry** in `changelog.md`
+- Canon changes should be reviewed by a Canon Steward
+- Canon files are append-mostly: supersede, don't delete
+EOF
+
+write_if_new "$TARGET/coherence/canon/mission.md" <<'EOF'
+# Mission
+
+<!-- Replace this with your project's mission statement. -->
+<!-- Why does this project exist? What problem does it solve? For whom? -->
+
+[Your mission here]
+EOF
+
+write_if_new "$TARGET/coherence/canon/architecture.md" <<'EOF'
+# Architecture
+
+<!-- Replace this with your core architectural commitments. -->
+<!-- What are the non-negotiable technical choices? -->
+
+[Your architectural commitments here]
+EOF
+
+write_if_new "$TARGET/coherence/canon/public-commitments.md" <<'EOF'
+# Public Commitments
+
+<!-- Promises made to users, partners, or stakeholders. -->
+
+[Your commitments here]
+EOF
+
+TODAY=$(date +%Y-%m-%d)
+
+write_if_new "$TARGET/coherence/canon/changelog.md" <<EOF
+# Canon Changelog
+
+Every change to files in \`coherence/canon/\` is recorded here.
+
+| Date | File | Change | Author | DLR |
+|------|------|--------|--------|-----|
+| $TODAY | All | Initial creation via coherence-init | — | — |
+EOF
+
+# ──────────────────────────────────────────────
+# coherence/drift/
+# ──────────────────────────────────────────────
+
+write_if_new "$TARGET/coherence/drift/README.md" <<'EOF'
+# DriftOps (Correction)
+
+Drift signals and patch tracking. When reality diverges from a recorded decision, assumption, or canon entry — this is where it gets logged and fixed.
+
+## Files
+
+| File | Purpose |
+|------|---------|
+| [DRIFT_TEMPLATE.md](DRIFT_TEMPLATE.md) | Template for new drift signals |
+
+## Rules
+
+- Every expired assumption should generate a drift signal
+- Every drift signal should have a severity (low / medium / critical)
+- Critical drift blocks releases until patched
+- Drift records are never deleted — set to `patched` or `wont-fix`
+EOF
+
+write_if_new "$TARGET/coherence/drift/DRIFT_TEMPLATE.md" <<'EOF'
+# DRIFT-NNNN: [Title]
+
+## Severity
+low | medium | critical
+
+## What Drifted
+Describe what no longer matches the recorded decision, assumption, or canon entry.
+
+## Evidence
+How was this detected? Link to data, observation, or automation output.
+
+## Affected
+- DLR: DLR-NNNN
+- Assumption: ASM-NNNN
+- Canon: [file path]
+
+## Proposed Patch
+What should be done to restore coherence. Be specific.
+
+## Patch PR
+[link when available]
+
+## Status
+open | patched | wont-fix
+EOF
+
+# ──────────────────────────────────────────────
+# coherence/telemetry/
+# ──────────────────────────────────────────────
+
+write_if_new "$TARGET/coherence/telemetry/README.md" <<'EOF'
+# Telemetry
+
+Coherence health metrics and scoring.
+
+## Files
+
+| File | Purpose |
+|------|---------|
+| [coherence_score.json](coherence_score.json) | Current coherence score snapshot |
+| [coherence_badge.json](coherence_badge.json) | Shields.io badge data |
+
+## How Scoring Works
+
+The Coherence Score (0-100) is calculated from four inputs:
+
+1. **DLR Coverage** (25 pts) — % of major PRs with a DLR
+2. **Assumption Currency** (25 pts) — % of assumptions not expired
+3. **Drift Health** (25 pts) — inverse of open drift signals
+4. **Why Retrieval** (25 pts) — median time to answer "why did we build it this way?"
+EOF
+
+write_if_new "$TARGET/coherence/telemetry/coherence_score.json" <<'EOF'
+{
+  "version": "0.3.0",
+  "date": "YYYY-MM-DD",
+  "score": 0,
+  "components": {
+    "dlr_coverage": { "value": 0, "weight": 25, "points": 0, "detail": "Not yet measured" },
+    "assumption_currency": { "value": 0, "weight": 25, "points": 0, "detail": "Not yet measured" },
+    "drift_health": { "value": 0, "weight": 25, "points": 0, "detail": "Not yet measured" },
+    "why_retrieval": { "value": 0, "weight": 25, "points": 0, "detail": "Not yet measured" }
+  }
+}
+EOF
+
+write_if_new "$TARGET/coherence/telemetry/coherence_badge.json" <<'EOF'
+{
+  "schemaVersion": 1,
+  "label": "coherence",
+  "message": "0/100",
+  "color": "red"
+}
+EOF
+
+# ──────────────────────────────────────────────
+# CODEOWNERS
+# ──────────────────────────────────────────────
+
+write_if_new "$TARGET/CODEOWNERS" <<'EOF'
+# CoherenceOps CODEOWNERS
+# Replace @OWNER with your Canon Steward's GitHub handle
+
+coherence/canon/    @OWNER
+coherence/intel/    @OWNER
+.github/workflows/  @OWNER
+EOF
+
+# ──────────────────────────────────────────────
+# GitHub Labels (optional, via gh CLI)
+# ──────────────────────────────────────────────
+
+if command -v gh &>/dev/null; then
+  echo ""
+  echo "Creating GitHub labels..."
+  labels=(
+    "major:e11d48:Major PR — requires a DLR"
+    "assumption-waiver:f59e0b:Waive expired assumption gate"
+    "coherence-dashboard:8b5cf6:Coherence dashboard issue"
+    "drift:ef4444:Drift signal"
+    "auto-detected:6366f1:Auto-detected by CI"
+    "decision:3b82f6:Decision record"
+  )
+  for entry in "${labels[@]}"; do
+    IFS=: read -r name color desc <<< "$entry"
+    gh label create "$name" --color "$color" --description "$desc" --force 2>/dev/null \
+      && echo "  + $name" || echo "  ~ $name (exists or failed)"
+  done
+else
+  echo ""
+  echo "Note: 'gh' CLI not found. Labels not created."
+  echo "      Install gh (https://cli.github.com/) or run the Label Bootstrap workflow."
+fi
+
+# ──────────────────────────────────────────────
+# Done
+# ──────────────────────────────────────────────
+
+echo ""
+echo "Done! CoherenceOps bootstrapped."
+echo ""
+echo "Next steps:"
+echo "  1. Edit coherence/canon/mission.md with your project's mission"
+echo "  2. Edit coherence/canon/architecture.md with your commitments"
+echo "  3. Add your first assumption to coherence/intel/assumptions.yaml"
+echo "  4. Replace @OWNER in CODEOWNERS with your GitHub handle"
+echo "  5. Copy .github/workflows/ from CoherenceOps for CI gates"
+echo "  6. Enable 'Require review from Code Owners' in branch protection"
