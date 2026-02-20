@@ -22,12 +22,14 @@
 - Label bootstrap (auto-create `major`, `assumption-waiver`, `coherence-dashboard`)
 - `coherence init` setup script (bootstrap folder structure + templates into any repo)
 - `coherence check` local validator (run gates locally before pushing)
+- Release automation (tag + GitHub Release from CI)
 
 ## v0.4.0
-- Cross-repo coherence federation (shared canon references)
-- Historical score trending via commit metadata
 - Reusable composite actions (`uses: 8ryanWh1t3/CoherenceOps/.github/actions/...`)
-- Release automation (tag + GitHub Release from CI)
+- Historical score trending via commit metadata
+
+## v0.5.0
+- Cross-repo coherence federation (shared canon references, upstream discovery, auth model)
 
 ## Release Checklist
 
