@@ -16,14 +16,15 @@
 - [x] Coherence Score specification
 
 ## v0.3.0
-- Canon diff detection (alert when canon files change without changelog entry)
-- Drift auto-detection from assumption expiry
-- Cross-repo coherence federation (shared canon references)
-
-## v0.4.0
+- Drift auto-detection from assumption expiry (scheduled workflow → auto-open DRIFT issues)
 - CODEOWNERS integration for canon files
 - Coherence score badge for README
+- Label bootstrap (auto-create `major`, `assumption-waiver`, `coherence-dashboard`)
+
+## v0.4.0
+- Cross-repo coherence federation (shared canon references)
 - Historical score trending via commit metadata
+- Reusable composite actions for adoption by other repos
 
 ## Release Checklist
 
