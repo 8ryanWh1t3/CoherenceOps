@@ -23,6 +23,32 @@ Steps:
 5. Open a Patch PR that fixes the root cause
 6. Update this drift record with the Patch PR link and set status to `patched`
 
+## Drift Resolution Flow
+
+```mermaid
+stateDiagram-v2
+    [*] --> Detected: assumption expired /<br/>decision invalidated /<br/>canon contradicted
+
+    Detected --> Open: create DRIFT-NNNN.md<br/>assign severity
+
+    state Open {
+        [*] --> Triage
+        Triage --> Low: minor
+        Triage --> Medium: notable
+        Triage --> Critical: blocking
+    }
+
+    Open --> PatchPR: open patch PR<br/>link in drift record
+    PatchPR --> Patched: PR merged /<br/>status → patched
+    Open --> WontFix: accepted risk /<br/>status → wont-fix
+
+    Patched --> [*]
+    WontFix --> [*]
+
+    note right of Critical: Blocks releases<br/>until resolved
+    note right of Patched: Coherence restored
+```
+
 ## Rules
 
 - Every expired assumption should generate a drift signal

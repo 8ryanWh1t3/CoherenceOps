@@ -21,6 +21,45 @@ It implements four modules:
 
 Plus a **telemetry** surface (`coherence/telemetry/`) for scoring coherence health.
 
+```mermaid
+graph LR
+    subgraph IntelOps["IntelOps (Truth)"]
+        CLM[Claims] --> PRV[Provenance]
+        ASM[Assumptions<br/>+ half-life]
+    end
+
+    subgraph ReOps["ReOps (Reasoning)"]
+        DLR[Decision<br/>Ledger Records]
+    end
+
+    subgraph FranOps["FranOps (Memory)"]
+        CAN[Canon]
+        CHL[Changelog]
+    end
+
+    subgraph DriftOps["DriftOps (Correction)"]
+        DRF[Drift Signals]
+        PAT[Patch PRs]
+    end
+
+    subgraph Telemetry
+        SCR[Coherence<br/>Score 0-100]
+    end
+
+    ASM -->|"depends on"| DLR
+    CLM -->|"supports"| DLR
+    DLR -->|"may change"| CAN
+    CAN -->|"changelog"| CHL
+    ASM -.->|"expires"| DRF
+    DLR -.->|"invalidated"| DRF
+    CAN -.->|"contradicted"| DRF
+    DRF -->|"fix"| PAT
+
+    IntelOps --> SCR
+    ReOps --> SCR
+    DriftOps --> SCR
+```
+
 ## Why?
 
 Ask yourself: **If your lead left tomorrow, could a new person answer "why did we build it this way?" in under 60 seconds?**

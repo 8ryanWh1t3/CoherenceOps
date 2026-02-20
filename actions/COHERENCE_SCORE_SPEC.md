@@ -12,6 +12,33 @@ score = dlr_coverage_pts + assumption_currency_pts + drift_health_pts + why_retr
 
 Each component contributes up to 25 points. Maximum score: 100.
 
+```mermaid
+graph LR
+    subgraph Score["Coherence Score (0-100)"]
+        direction TB
+        D[DLR Coverage<br/>25 pts]
+        A[Assumption Currency<br/>25 pts]
+        DR[Drift Health<br/>25 pts]
+        W[Why Retrieval<br/>25 pts]
+    end
+
+    MP[Major PRs<br/>with DLR] --> D
+    AY[assumptions.yaml<br/>active + unexpired] --> A
+    OD[Open drift<br/>signals] --> DR
+    MT[Median time to<br/>answer 'why?'] --> W
+
+    Score --> E{Score?}
+    E -->|"90-100"| G[Excellent]
+    E -->|"70-89"| B[Good]
+    E -->|"50-69"| Y[Needs Attention]
+    E -->|"0-49"| R[Critical]
+
+    style G fill:#27ae60,color:#fff
+    style B fill:#2980b9,color:#fff
+    style Y fill:#f39c12,color:#000
+    style R fill:#c0392b,color:#fff
+```
+
 ## Components
 
 ### 1. DLR Coverage (25 pts)

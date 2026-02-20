@@ -22,6 +22,28 @@ Steps:
 4. Commit to your feature branch
 5. Reference the DLR path in your PR description
 
+## DLR Traceability
+
+```mermaid
+graph TB
+    DLR[DLR-NNNN<br/>Decision Record]
+
+    DLR -->|"depends on"| ASM1[ASM-0001]
+    DLR -->|"depends on"| ASM2[ASM-0002]
+    DLR -->|"supported by"| CLM[CLM-0001]
+    DLR -->|"may change"| CAN[canon/<br/>architecture.md]
+    DLR -->|"owned by"| OWN["@owner"]
+
+    ASM1 -.->|"expired →"| DRF[DRIFT-NNNN]
+    DRF -->|"assigned to"| OWN
+    DRF -->|"fixed by"| PAT[Patch PR]
+    PAT -->|"updates"| DLR
+
+    style DLR fill:#2c3e50,color:#fff
+    style DRF fill:#c0392b,color:#fff
+    style PAT fill:#27ae60,color:#fff
+```
+
 ## Rules
 
 - Major PRs require a DLR before merge
