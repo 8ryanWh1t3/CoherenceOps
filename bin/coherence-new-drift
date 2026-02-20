@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# coherence-new-drift — Create a new drift signal with date-based ID
+# Usage: ./coherence-new-drift "Title of Drift Signal"
+
+DIR="coherence/drift"
+INDEX="$DIR/INDEX.md"
+TODAY=$(date +%Y%m%d)
+TITLE="${1:-Untitled Drift Signal}"
+
+# Find next suffix for today
+SUFFIX=1
+while [ -f "$DIR/DRIFT-${TODAY}-$(printf '%03d' $SUFFIX).md" ]; do
+  SUFFIX=$((SUFFIX + 1))
+done
+
+ID="DRIFT-${TODAY}-$(printf '%03d' $SUFFIX)"
+FILE="$DIR/${ID}.md"
+DATE_FMT=$(date +%Y-%m-%d)
+
+cat > "$FILE" <<EOF
+# ${ID}: ${TITLE}
+
+## Severity
+low | medium | critical
+
+## What Drifted
+Describe what no longer matches reality.
+
+## Evidence
+How was this detected?
+
+## Affected
+- DLR: DLR-NNNN
+- Assumption: ASM-NNNN
+- Canon: [file]
+
+## Proposed Patch
+What should be done.
+
+## Patch PR
+[link when available]
+
+## Status
+open
+EOF
+
+echo "Created: $FILE"
+
+# Append to INDEX
+if [ ! -f "$INDEX" ]; then
+  cat > "$INDEX" <<'INDEXEOF'
+# Drift Signal Index
+
+| Date | ID | Title | Severity | Status |
+|------|----|-------|----------|--------|
+INDEXEOF
+fi
+
+echo "| ${DATE_FMT} | [${ID}](${ID}.md) | ${TITLE} | TBD | open |" >> "$INDEX"
+echo "Updated: $INDEX"

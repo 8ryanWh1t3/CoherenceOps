@@ -254,6 +254,46 @@ jobs:
               core.setOutput('message', `${driftFiles.length} drift signal(s) validated.`);
             }
 
+      - name: "Gate 5: Waiver Validation"
+        id: gate-waiver
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const labels = pr.labels.map(l => l.name);
+            const hasWaiver = labels.includes('coherence:waiver');
+
+            if (!hasWaiver) {
+              core.setOutput('status', 'skip');
+              core.setOutput('message', 'No waiver label.');
+              return;
+            }
+
+            const body = pr.body || '';
+            const reasonMatch = body.match(/^WAIVER:\s*(.+)/m);
+            const expiryMatch = body.match(/^WAIVER-EXPIRY:\s*(\d{4}-\d{2}-\d{2})/m);
+
+            if (!reasonMatch || !expiryMatch) {
+              core.setOutput('status', 'fail');
+              core.setOutput('message', 'Waiver label present but missing WAIVER: and/or WAIVER-EXPIRY: in PR body.');
+              core.setFailed('Gate 5: Waiver requires both WAIVER: reason and WAIVER-EXPIRY: date in PR body.');
+              return;
+            }
+
+            const expiry = new Date(expiryMatch[1] + 'T00:00:00');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (expiry < today) {
+              core.setOutput('status', 'fail');
+              core.setOutput('message', `Waiver expired on ${expiryMatch[1]}.`);
+              core.setFailed('Gate 5: Waiver expiry date has passed.');
+              return;
+            }
+
+            core.setOutput('status', 'pass');
+            core.setOutput('message', `Waiver accepted: "${reasonMatch[1].trim()}" (expires ${expiryMatch[1]})`);
+
       - name: "Post Summary Comment"
         if: always()
         uses: actions/github-script@v7
@@ -264,6 +304,7 @@ jobs:
               { name: 'Assumption Expiry', id: 'gate-assumptions' },
               { name: 'Canon Changelog', id: 'gate-canon' },
               { name: 'Drift Format', id: 'gate-drift' },
+              { name: 'Waiver', id: 'gate-waiver' },
             ];
 
             const icons = { pass: ':white_check_mark:', fail: ':x:', warn: ':warning:', skip: ':heavy_minus_sign:' };

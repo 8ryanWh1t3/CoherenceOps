@@ -17,7 +17,7 @@ Drift signals and patch tracking. When reality diverges from a recorded decision
 
 Steps:
 1. Click the link above
-2. Replace `NNNN` with the next number
+2. Replace `NNNN` with the next number or use date-based ID (e.g. `DRIFT-20260220-001`)
 3. Fill in severity, evidence, affected records, and proposed patch
 4. Commit to a branch
 5. Open a Patch PR that fixes the root cause

@@ -17,7 +17,7 @@ Decision Ledger Records — what was decided, why, and what was traded off.
 
 Steps:
 1. Click the link above
-2. Replace `NNNN` with the next number (check existing DLRs)
+2. Replace `NNNN` with the next number or use date-based ID (e.g. `DLR-20260220-001`)
 3. Fill in each section
 4. Commit to your feature branch
 5. Reference the DLR path in your PR description

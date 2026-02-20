@@ -26,7 +26,7 @@ result() {
   esac
 }
 
-echo "CoherenceOps Check v0.3.0"
+echo "CoherenceOps Check v0.4.0"
 echo "========================="
 echo ""
 

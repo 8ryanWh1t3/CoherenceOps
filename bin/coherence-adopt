@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# coherence-adopt — Replace ORG/REPO placeholders with actual values
+# Usage: ./coherence-adopt [org/repo]
+#        If no argument, auto-detects from git remote.
+
+echo "CoherenceOps Adopt v0.4.0"
+echo "========================="
+echo ""
+
+# Detect org/repo from git remote if not provided
+if [ $# -ge 1 ]; then
+  FULL="$1"
+else
+  REMOTE_URL=$(git remote get-url origin 2>/dev/null || true)
+  if [ -z "$REMOTE_URL" ]; then
+    echo "ERROR: No git remote found. Pass org/repo as argument."
+    echo "Usage: $0 myorg/myrepo"
+    exit 1
+  fi
+  # Extract org/repo from HTTPS or SSH URL
+  FULL=$(echo "$REMOTE_URL" | sed -E 's|.*github\.com[:/]||; s|\.git$||')
+fi
+
+ORG=$(echo "$FULL" | cut -d/ -f1)
+REPO=$(echo "$FULL" | cut -d/ -f2)
+
+if [ -z "$ORG" ] || [ -z "$REPO" ]; then
+  echo "ERROR: Could not parse org/repo from '$FULL'"
+  exit 1
+fi
+
+echo "Org:  $ORG"
+echo "Repo: $REPO"
+echo ""
+
+# Files containing ORG/REPO placeholders
+FILES=(
+  coherence/decisions/README.md
+  coherence/drift/README.md
+)
+
+REPLACED=0
+for f in "${FILES[@]}"; do
+  if [ ! -f "$f" ]; then
+    echo "SKIP  $f (not found)"
+    continue
+  fi
+
+  if grep -q "ORG/REPO" "$f"; then
+    sed -i.bak "s|ORG/REPO|${ORG}/${REPO}|g" "$f"
+    rm -f "${f}.bak"
+    echo "DONE  $f"
+    REPLACED=$((REPLACED + 1))
+  else
+    echo "OK    $f (no placeholders)"
+  fi
+done
+
+echo ""
+echo "Replaced placeholders in $REPLACED file(s)."
+echo ""
+echo "Next steps:"
+echo "  1. Run label bootstrap:  gh workflow run label-bootstrap.yml"
+echo "  2. Update CODEOWNERS with your team handles"
+echo "  3. Edit coherence/canon/ files with your project details"
+echo "  4. See docs/ADOPTION_CHECKLIST.md for the full checklist"

@@ -1,0 +1,21 @@
+# Demo fixture: one assumption expiring within 14 days (warns but doesn't fail)
+# Usage: cp demo/fixtures/assumptions_near_expiry.yaml coherence/intel/assumptions.yaml
+
+assumptions:
+  - id: ASM-0001
+    statement: "Teams will adopt folder-based governance if templates are pre-filled"
+    basis: "Observation from internal pilots; re-validated with demo data"
+    half_life: "90d"
+    expires: 2026-03-01
+    status: active
+    owner: "@8ryanWh1t3"
+    recorded: 2026-02-20
+
+  - id: ASM-0002
+    statement: "Coherence Score > 80 correlates with faster onboarding"
+    basis: "Hypothesis based on why-retrieval KPI design"
+    half_life: "6mo"
+    expires: 2026-08-20
+    status: active
+    owner: "@8ryanWh1t3"
+    recorded: 2026-02-20

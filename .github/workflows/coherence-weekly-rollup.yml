@@ -1,0 +1,142 @@
+name: Coherence Weekly Rollup
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Monday 9:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rollup:
+    name: Weekly Rollup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate Rollup
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const warnDate = new Date(today);
+            warnDate.setDate(warnDate.getDate() + 14);
+
+            // ── Assumptions ──
+            let totalActive = 0;
+            let expiredCount = 0;
+            let nearExpiryCount = 0;
+            const expiredList = [];
+            const nearExpiryList = [];
+
+            const asmPath = 'coherence/intel/assumptions.yaml';
+            if (fs.existsSync(asmPath)) {
+              const content = fs.readFileSync(asmPath, 'utf8');
+              const blocks = content.split(/^\s*- id:/m).slice(1);
+              for (const block of blocks) {
+                const id = (block.match(/^\s*(.+)/m) || ['', ''])[1].trim();
+                const status = (block.match(/status:\s*(.+)/m) || ['', ''])[1].trim();
+                const expires = (block.match(/expires:\s*(.+)/m) || ['', ''])[1].trim();
+                const statement = (block.match(/statement:\s*"?(.+?)"?\s*$/m) || ['', ''])[1].trim();
+                if (status !== 'active') continue;
+                totalActive++;
+                if (!expires) continue;
+                const exp = new Date(expires + 'T00:00:00');
+                const asmId = `ASM-${id.replace(/^ASM-/, '')}`;
+                if (exp < today) {
+                  expiredCount++;
+                  expiredList.push({ id: asmId, expires, statement });
+                } else if (exp <= warnDate) {
+                  nearExpiryCount++;
+                  nearExpiryList.push({ id: asmId, expires, statement });
+                }
+              }
+            }
+
+            // ── Drift ──
+            let openDriftCount = 0;
+            const openDrifts = [];
+            const driftDir = 'coherence/drift';
+            if (fs.existsSync(driftDir)) {
+              const driftFiles = fs.readdirSync(driftDir)
+                .filter(f => /^DRIFT-[\d-]+\.md$/.test(f));
+              for (const df of driftFiles) {
+                const content = fs.readFileSync(`${driftDir}/${df}`, 'utf8');
+                const statusMatch = content.match(/## Status\s*\n+\s*(.+)/);
+                if (statusMatch) {
+                  const st = statusMatch[1].trim().toLowerCase();
+                  if (st === 'open' || st === 'in_progress') {
+                    openDriftCount++;
+                    const sevMatch = content.match(/## Severity\s*\n+\s*(.+)/);
+                    const sev = sevMatch ? sevMatch[1].trim() : 'unknown';
+                    openDrifts.push({ id: df.replace('.md', ''), severity: sev });
+                  }
+                }
+              }
+            }
+
+            // ── Score ──
+            let score = null;
+            const scorePath = 'coherence/telemetry/coherence_score.json';
+            if (fs.existsSync(scorePath)) {
+              try { score = JSON.parse(fs.readFileSync(scorePath, 'utf8')); } catch {}
+            }
+
+            // ── Write rollup JSON ──
+            const dateStr = today.toISOString().split('T')[0];
+            const rollup = {
+              date: dateStr,
+              assumptions: { total_active: totalActive, expired: expiredCount, near_expiry: nearExpiryCount },
+              drift: { open: openDriftCount },
+              score: score ? score.score : null,
+            };
+            fs.writeFileSync('coherence/telemetry/weekly_rollup.json',
+              JSON.stringify(rollup, null, 2) + '\n');
+
+            // ── Write top risks ──
+            const risks = [];
+
+            // Sort: expired assumptions first, then near-expiry, then open drift
+            for (const a of expiredList) {
+              risks.push({ priority: 1, label: 'EXPIRED', detail: `${a.id} — ${a.statement} (expired ${a.expires})` });
+            }
+            for (const a of nearExpiryList) {
+              risks.push({ priority: 2, label: 'EXPIRING', detail: `${a.id} — ${a.statement} (expires ${a.expires})` });
+            }
+            for (const d of openDrifts) {
+              risks.push({ priority: d.severity === 'critical' ? 1 : 3, label: `DRIFT/${d.severity}`, detail: d.id });
+            }
+
+            risks.sort((a, b) => a.priority - b.priority);
+
+            const lines = [
+              `# Top Risks — ${dateStr}`,
+              '',
+            ];
+
+            if (risks.length === 0) {
+              lines.push('No active risks. All assumptions current, no open drift.');
+            } else {
+              lines.push('| Priority | Type | Detail |');
+              lines.push('|----------|------|--------|');
+              for (const r of risks.slice(0, 10)) {
+                lines.push(`| ${r.priority === 1 ? 'HIGH' : r.priority === 2 ? 'MED' : 'LOW'} | ${r.label} | ${r.detail} |`);
+              }
+            }
+
+            lines.push('');
+            fs.writeFileSync('coherence/telemetry/top_risks.md', lines.join('\n'));
+
+      - name: Commit Rollup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add coherence/telemetry/weekly_rollup.json coherence/telemetry/top_risks.md
+          git diff --staged --quiet && echo "No changes to commit" && exit 0
+          git commit -m "chore: weekly coherence rollup [skip ci]"
+          git push

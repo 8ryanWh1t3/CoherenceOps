@@ -4,6 +4,24 @@ All notable changes to CoherenceOps are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.4.0] - 2026-02-20
+
+### Added
+- Drift-to-Patch money demo (`docs/DEMO_DRIFT_TO_PATCH.md`) + 10-min script + demo fixtures
+- Template adoption guide (`TEMPLATE_ADOPTION.md`) + checklist + `bin/coherence-adopt`
+- Date-based ID tools: `bin/coherence-new-dlr`, `bin/coherence-new-drift`
+- Decision and drift INDEX files (`coherence/decisions/INDEX.md`, `coherence/drift/INDEX.md`)
+- Weekly rollup workflow (`coherence-weekly-rollup.yml`) + `top_risks.md`
+- Executive health guide (`docs/EXECUTIVE_README.md`)
+- Branch protection guide (`docs/BRANCH_PROTECTION.md`)
+- PR template with DLR checklist and waiver fields
+- Gate 5: Waiver validation — enforces `WAIVER:` reason + `WAIVER-EXPIRY:` date
+
+### Changed
+- CODEOWNERS expanded to cover `bin/` directory
+- DLR regex in score workflow widened to accept plain IDs and date-based formats
+- README quick links expanded with demo, playbook, executive guide, adoption checklist
+
 ## [0.3.0] - 2026-02-20
 
 ### Added

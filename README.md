@@ -110,6 +110,10 @@ That's the loop: **Decide → Seal → Drift → Patch → Repeat.**
 |----------|------|
 | 1-Page Quick Start | [docs/QUICKSTART_1PAGE.md](docs/QUICKSTART_1PAGE.md) |
 | Swim Lane Diagram | [docs/SWIMLANE.md](docs/SWIMLANE.md) |
+| 10-Min Demo | [docs/DEMO_DRIFT_TO_PATCH.md](docs/DEMO_DRIFT_TO_PATCH.md) |
+| Gate Test Playbook | [docs/GATE_TEST_PLAYBOOK.md](docs/GATE_TEST_PLAYBOOK.md) |
+| Executive Health Guide | [docs/EXECUTIVE_README.md](docs/EXECUTIVE_README.md) |
+| Adoption Checklist | [docs/ADOPTION_CHECKLIST.md](docs/ADOPTION_CHECKLIST.md) |
 | Principles | [docs/PRINCIPLES.md](docs/PRINCIPLES.md) |
 | Glossary | [docs/GLOSSARY.md](docs/GLOSSARY.md) |
 | 30-Min Training Outline | [docs/TRAINING_30MIN_OUTLINE.md](docs/TRAINING_30MIN_OUTLINE.md) |
@@ -141,4 +145,4 @@ See [actions/COHERENCE_SCORE_SPEC.md](actions/COHERENCE_SCORE_SPEC.md) for the f
 
 ## Version
 
-v0.3.0 — See [CHANGELOG.md](CHANGELOG.md)
+v0.4.0 — See [CHANGELOG.md](CHANGELOG.md)

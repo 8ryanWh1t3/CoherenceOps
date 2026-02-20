@@ -1,6 +1,17 @@
 # Roadmap
 
-## v0.3.0 (current)
+## v0.4.0 (current)
+- [x] Drift-to-Patch money demo + fixtures + 10-min script
+- [x] Template adoption guide + `bin/coherence-adopt` placeholder replacement
+- [x] Date-based auto IDs: `bin/coherence-new-dlr`, `bin/coherence-new-drift`
+- [x] Decision and drift INDEX files
+- [x] Weekly rollup workflow + `top_risks.md`
+- [x] Executive health guide (`docs/EXECUTIVE_README.md`)
+- [x] Enterprise hardening: expanded CODEOWNERS, branch protection guide
+- [x] Waiver gate (Gate 5) with expiry enforcement
+- [x] PR template with waiver fields
+
+## v0.3.0
 - [x] Drift auto-detection from assumption expiry (scheduled workflow → auto-open DRIFT issues)
 - [x] CODEOWNERS integration for canon files
 - [x] Coherence score badge for README
@@ -24,11 +35,11 @@
 - [x] PR and issue templates
 - [x] Coherence Score specification
 
-## v0.4.0
+## v0.5.0
 - Reusable composite actions (`uses: 8ryanWh1t3/CoherenceOps/.github/actions/...`)
 - Historical score trending via commit metadata
 
-## v0.5.0
+## v0.6.0
 - Cross-repo coherence federation (shared canon references, upstream discovery, auth model)
 
 ## Release Checklist

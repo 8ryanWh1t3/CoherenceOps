@@ -1,4 +1,7 @@
 # CoherenceOps CODEOWNERS
+#
+# Replace @8ryanWh1t3 with @org/team-coherence-stewards for enterprise use.
+
 # Canon files require review from the Canon Steward
 coherence/canon/    @8ryanWh1t3
 
@@ -7,3 +10,6 @@ coherence/intel/    @8ryanWh1t3
 
 # Governance workflows require maintainer review
 .github/workflows/  @8ryanWh1t3
+
+# CLI tools require maintainer review
+bin/                @8ryanWh1t3

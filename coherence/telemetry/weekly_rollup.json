@@ -1,0 +1,12 @@
+{
+  "date": "2026-02-20",
+  "assumptions": {
+    "total_active": 2,
+    "expired": 0,
+    "near_expiry": 0
+  },
+  "drift": {
+    "open": 1
+  },
+  "score": 85
+}
