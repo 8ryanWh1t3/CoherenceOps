@@ -1,0 +1,306 @@
+name: Coherence Gates
+
+on:
+  pull_request:
+    types: [opened, synchronize, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  coherence-gates:
+    name: Coherence Gates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "Gate 1: DLR Required for Major PRs"
+        id: gate-dlr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const pr = context.payload.pull_request;
+
+            // --- Determine if PR is "major" ---
+            const labels = pr.labels.map(l => l.name);
+            const hasMajorLabel = labels.includes('major');
+
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner, repo,
+              pull_number: pr.number,
+              per_page: 100,
+            });
+            const changedPaths = files.map(f => f.filename);
+            const manyFiles = changedPaths.length > 10;
+            const touchesGovernance = changedPaths.some(p =>
+              (p.startsWith('coherence/canon/') || p.startsWith('coherence/intel/'))
+            );
+
+            const isMajor = hasMajorLabel || manyFiles || touchesGovernance;
+
+            if (!isMajor) {
+              core.setOutput('status', 'skip');
+              core.setOutput('message', 'Not a major PR — DLR not required.');
+              return;
+            }
+
+            // --- Check for DLR link in PR body ---
+            const body = pr.body || '';
+            const dlrMatch = body.match(/coherence\/decisions\/DLR-(\d{4})\.md/);
+
+            if (!dlrMatch) {
+              core.setOutput('status', 'fail');
+              core.setOutput('message', 'Major PR has no DLR linked. Create a DLR in coherence/decisions/ and link it in the PR description.');
+              core.setFailed('Gate 1: Major PR requires a DLR link in the PR description.');
+              return;
+            }
+
+            // --- Verify DLR file exists in branch ---
+            const dlrPath = `coherence/decisions/DLR-${dlrMatch[1]}.md`;
+            const fileExists = changedPaths.includes(dlrPath) ||
+              await github.rest.repos.getContent({
+                owner, repo, path: dlrPath, ref: pr.head.sha,
+              }).then(() => true).catch(() => false);
+
+            if (!fileExists) {
+              core.setOutput('status', 'fail');
+              core.setOutput('message', `DLR linked (${dlrPath}) but file not found in branch.`);
+              core.setFailed(`Gate 1: DLR file ${dlrPath} does not exist.`);
+              return;
+            }
+
+            core.setOutput('status', 'pass');
+            core.setOutput('message', `DLR linked: ${dlrPath}`);
+
+      - name: "Gate 2: Assumption Expiry"
+        id: gate-assumptions
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'coherence/intel/assumptions.yaml';
+
+            if (!fs.existsSync(path)) {
+              core.setOutput('status', 'skip');
+              core.setOutput('message', 'No assumptions.yaml found.');
+              return;
+            }
+
+            const content = fs.readFileSync(path, 'utf8');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const warnDate = new Date(today);
+            warnDate.setDate(warnDate.getDate() + 14);
+
+            // Parse assumptions from YAML (simple regex for predictable structure)
+            const blocks = content.split(/^\s*- id:/m).slice(1);
+            const assumptions = blocks.map(block => {
+              const id = (block.match(/^\s*(.+)/m) || ['', ''])[1].trim();
+              const status = (block.match(/status:\s*(.+)/m) || ['', ''])[1].trim();
+              const expires = (block.match(/expires:\s*(.+)/m) || ['', ''])[1].trim();
+              const statement = (block.match(/statement:\s*"?(.+?)"?\s*$/m) || ['', ''])[1].trim();
+              return { id: `ASM-${id.replace(/^ASM-/, '')}`, status, expires, statement };
+            });
+
+            const active = assumptions.filter(a => a.status === 'active');
+            const expired = [];
+            const expiring = [];
+
+            for (const a of active) {
+              if (!a.expires) continue;
+              const exp = new Date(a.expires + 'T00:00:00');
+              if (exp < today) {
+                expired.push(a);
+              } else if (exp <= warnDate) {
+                expiring.push(a);
+              }
+            }
+
+            // Check for waiver label
+            const labels = context.payload.pull_request.labels.map(l => l.name);
+            const hasWaiver = labels.includes('assumption-waiver');
+
+            let status = 'pass';
+            let message = `${active.length} active assumptions, all current.`;
+
+            if (expiring.length > 0) {
+              status = 'warn';
+              const names = expiring.map(a => `${a.id} (expires ${a.expires})`).join(', ');
+              message = `Warning: assumptions expiring within 14 days: ${names}`;
+            }
+
+            if (expired.length > 0) {
+              const names = expired.map(a => `${a.id} (expired ${a.expires})`).join(', ');
+              if (hasWaiver) {
+                status = 'warn';
+                message = `Expired assumptions waived: ${names}`;
+              } else {
+                status = 'fail';
+                message = `Expired assumptions: ${names}. Add label \`assumption-waiver\` to override.`;
+                core.setFailed('Gate 2: Active assumptions have expired.');
+              }
+            }
+
+            core.setOutput('status', status);
+            core.setOutput('message', message);
+
+      - name: "Gate 3: Canon Changelog Required"
+        id: gate-canon
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const pr = context.payload.pull_request;
+
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner, repo,
+              pull_number: pr.number,
+              per_page: 100,
+            });
+            const changedPaths = files.map(f => f.filename);
+
+            const canonChanged = changedPaths.some(p =>
+              p.startsWith('coherence/canon/') && p !== 'coherence/canon/changelog.md'
+            );
+
+            if (!canonChanged) {
+              core.setOutput('status', 'skip');
+              core.setOutput('message', 'No canon files changed.');
+              return;
+            }
+
+            const changelogUpdated = changedPaths.includes('coherence/canon/changelog.md');
+
+            if (!changelogUpdated) {
+              core.setOutput('status', 'fail');
+              core.setOutput('message', 'Canon changed without a changelog entry. Update coherence/canon/changelog.md.');
+              core.setFailed('Gate 3: Canon changed without changelog entry.');
+              return;
+            }
+
+            core.setOutput('status', 'pass');
+            core.setOutput('message', 'Canon changed with changelog entry.');
+
+      - name: "Gate 4: Drift Format Validation"
+        id: gate-drift
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const { owner, repo } = context.repo;
+            const pr = context.payload.pull_request;
+
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner, repo,
+              pull_number: pr.number,
+              per_page: 100,
+            });
+
+            const driftFiles = files.filter(f =>
+              f.status === 'added' && /^coherence\/drift\/DRIFT-\d+\.md$/.test(f.filename)
+            );
+
+            if (driftFiles.length === 0) {
+              core.setOutput('status', 'skip');
+              core.setOutput('message', 'No new drift signals added.');
+              return;
+            }
+
+            const required = ['## Severity', '## What Drifted', '## Evidence', '## Affected', '## Status'];
+            const validSeverities = ['low', 'medium', 'critical'];
+            const warnings = [];
+
+            for (const df of driftFiles) {
+              let content = '';
+              try {
+                content = fs.readFileSync(df.filename, 'utf8');
+              } catch {
+                // File might not exist locally in checkout if only added in PR
+                const { data } = await github.rest.repos.getContent({
+                  owner, repo, path: df.filename, ref: pr.head.sha,
+                });
+                content = Buffer.from(data.content, 'base64').toString('utf8');
+              }
+
+              const missing = required.filter(h => !content.includes(h));
+              if (missing.length > 0) {
+                warnings.push(`${df.filename}: missing sections: ${missing.join(', ')}`);
+              }
+
+              // Check severity value
+              const sevMatch = content.match(/## Severity\s*\n+\s*(.+)/);
+              if (sevMatch) {
+                const sev = sevMatch[1].trim().toLowerCase();
+                if (!validSeverities.includes(sev)) {
+                  warnings.push(`${df.filename}: invalid severity "${sevMatch[1].trim()}" (expected: low, medium, critical)`);
+                }
+              }
+            }
+
+            if (warnings.length > 0) {
+              core.setOutput('status', 'warn');
+              core.setOutput('message', warnings.join('\n'));
+              core.warning('Gate 4: Drift signal format issues:\n' + warnings.join('\n'));
+            } else {
+              core.setOutput('status', 'pass');
+              core.setOutput('message', `${driftFiles.length} drift signal(s) validated.`);
+            }
+
+      - name: "Post Summary Comment"
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const gates = [
+              { name: 'DLR Required', id: 'gate-dlr' },
+              { name: 'Assumption Expiry', id: 'gate-assumptions' },
+              { name: 'Canon Changelog', id: 'gate-canon' },
+              { name: 'Drift Format', id: 'gate-drift' },
+            ];
+
+            const icons = { pass: ':white_check_mark:', fail: ':x:', warn: ':warning:', skip: ':heavy_minus_sign:' };
+            const rows = gates.map(g => {
+              const status = '${{ steps.' + g.id + '.outputs.status }}' || 'skip';
+              const message = '${{ steps.' + g.id + '.outputs.message }}' || '—';
+              const icon = icons[status] || ':grey_question:';
+              return `| ${icon} | **${g.name}** | ${message} |`;
+            });
+
+            const body = [
+              '## Coherence Gates',
+              '',
+              '| Status | Gate | Details |',
+              '|--------|------|---------|',
+              ...rows,
+              '',
+              '_Powered by [CoherenceOps](https://github.com/8ryanWh1t3/CoherenceOps)_',
+            ].join('\n');
+
+            // Find existing comment
+            const { owner, repo } = context.repo;
+            const { data: comments } = await github.rest.issues.listComments({
+              owner, repo,
+              issue_number: context.payload.pull_request.number,
+            });
+            const existing = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('## Coherence Gates')
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner, repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner, repo,
+                issue_number: context.payload.pull_request.number,
+                body,
+              });
+            }

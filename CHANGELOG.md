@@ -4,6 +4,20 @@ All notable changes to CoherenceOps are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.0] - 2026-02-20
+
+### Added
+- GitHub Actions: `coherence-gates.yml` — 4 PR validation gates
+  - Gate 1: DLR required for major PRs
+  - Gate 2: Assumption expiry check (warn 14d, block expired)
+  - Gate 3: Canon changelog enforcement
+  - Gate 4: Drift format validation (non-blocking)
+  - Consolidated summary comment on PRs
+- GitHub Actions: `coherence-score.yml` — automated weekly score calculation
+  - Reads assumptions, drift, PR data to compute 4-component score
+  - Commits updated `coherence_score.json` on schedule
+  - Creates/updates pinned "Coherence Dashboard" issue
+
 ## [0.1.0] - 2026-02-20
 
 ### Added

@@ -1,27 +1,35 @@
 # Roadmap
 
-## v0.1.0 (current)
-- Folder structure and templates
-- Seed DLR, drift, canon, intel files
-- Documentation and training assets
-- PR and issue templates
-- Coherence Score specification
+## v0.2.0 (current)
+- [x] GitHub Actions: DLR enforcement on major PRs
+- [x] GitHub Actions: assumption expiry warnings
+- [x] GitHub Actions: canon changelog enforcement
+- [x] GitHub Actions: drift format validation
+- [x] Automated coherence score calculation
+- [x] Dashboard issue (auto-generated summary)
 
-## v0.2.0
-- GitHub Actions: DLR enforcement on major PRs
-- GitHub Actions: assumption expiry warnings
-- Automated coherence score calculation
-- Dashboard issue (auto-generated summary)
+## v0.1.0
+- [x] Folder structure and templates
+- [x] Seed DLR, drift, canon, intel files
+- [x] Documentation and training assets
+- [x] PR and issue templates
+- [x] Coherence Score specification
 
 ## v0.3.0
-- Canon diff detection (alert when canon files change without changelog entry)
-- Drift auto-detection from assumption expiry
-- Cross-repo coherence federation (shared canon references)
-
-## v0.4.0
+- Drift auto-detection from assumption expiry (scheduled workflow → auto-open DRIFT issues)
 - CODEOWNERS integration for canon files
 - Coherence score badge for README
+- Label bootstrap (auto-create `major`, `assumption-waiver`, `coherence-dashboard`)
+- `coherence init` setup script (bootstrap folder structure + templates into any repo)
+- `coherence check` local validator (run gates locally before pushing)
+- Release automation (tag + GitHub Release from CI)
+
+## v0.4.0
+- Reusable composite actions (`uses: 8ryanWh1t3/CoherenceOps/.github/actions/...`)
 - Historical score trending via commit metadata
+
+## v0.5.0
+- Cross-repo coherence federation (shared canon references, upstream discovery, auth model)
 
 ## Release Checklist
 
