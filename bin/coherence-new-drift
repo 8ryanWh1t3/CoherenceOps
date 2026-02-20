@@ -3,6 +3,16 @@ set -euo pipefail
 
 # coherence-new-drift — Create a new drift signal with date-based ID
 # Usage: ./coherence-new-drift "Title of Drift Signal"
+# Always writes to coherence/drift/ (production only).
+
+# Safety guard: refuse to create files when running against sample data
+COHERENCE_ROOT="${COHERENCE_ROOT:-coherence}"
+if [ "$COHERENCE_ROOT" != "coherence" ]; then
+  echo "ERROR: coherence-new-drift is a production-only tool."
+  echo "       COHERENCE_ROOT is set to '${COHERENCE_ROOT}' — refusing to create files."
+  echo "       Unset COHERENCE_ROOT or set it to 'coherence' to create new drift signals."
+  exit 1
+fi
 
 DIR="coherence/drift"
 INDEX="$DIR/INDEX.md"

@@ -139,10 +139,26 @@ CoherenceOps defines a simple **Coherence Score** (0-100) based on:
 
 See [actions/COHERENCE_SCORE_SPEC.md](actions/COHERENCE_SCORE_SPEC.md) for the formula.
 
+## Run Dashboards Against Sample Packs
+
+CoherenceOps ships with sample data packs for demos, training, and stress-testing. Run any dashboard against sample data without copying files:
+
+**Locally:**
+
+```bash
+COHERENCE_ROOT=sample_data/game_studio_aaa bin/coherence-check
+```
+
+**Via GitHub Actions (workflow_dispatch):**
+
+Go to **Actions** > select a workflow (e.g., Coherence Weekly Rollup) > **Run workflow** > set `coherence_root` to `sample_data/game_studio_aaa`.
+
+Outputs are written to `telemetry_out/` (never into the sample pack). See [docs/SAMPLE_MODE.md](docs/SAMPLE_MODE.md) for details.
+
 ## License
 
 [MIT](LICENSE)
 
 ## Version
 
-v0.4.0 — See [CHANGELOG.md](CHANGELOG.md)
+v0.4.1 — See [CHANGELOG.md](CHANGELOG.md)

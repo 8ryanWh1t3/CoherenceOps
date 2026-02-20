@@ -4,6 +4,17 @@ on:
   schedule:
     - cron: '0 9 * * 1'  # Monday 9:00 UTC
   workflow_dispatch:
+    inputs:
+      coherence_root:
+        description: 'Coherence root directory (default: coherence)'
+        required: false
+        default: 'coherence'
+        type: string
+      telemetry_out_dir:
+        description: 'Override telemetry output directory (leave blank for auto)'
+        required: false
+        default: ''
+        type: string
 
 permissions:
   contents: write
@@ -12,16 +23,47 @@ jobs:
   rollup:
     name: Weekly Rollup
     runs-on: ubuntu-latest
+    env:
+      COHERENCE_ROOT: ${{ inputs.coherence_root || 'coherence' }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - name: Resolve output directory
+        id: resolve
+        run: |
+          ROOT="${COHERENCE_ROOT}"
+          OVERRIDE="${{ inputs.telemetry_out_dir }}"
+          if [ -n "$OVERRIDE" ]; then
+            OUT_DIR="$OVERRIDE"
+          elif [ "$ROOT" = "coherence" ]; then
+            OUT_DIR="coherence/telemetry"
+          else
+            SANITIZED=$(echo "$ROOT" | tr '/' '_')
+            OUT_DIR="telemetry_out/${SANITIZED}"
+          fi
+          echo "out_dir=${OUT_DIR}" >> "$GITHUB_OUTPUT"
+          mkdir -p "$OUT_DIR"
+
+      - name: Validate root
+        run: |
+          if [ ! -f "${COHERENCE_ROOT}/intel/assumptions.yaml" ]; then
+            echo "::warning::No assumptions.yaml found at ${COHERENCE_ROOT}/intel/assumptions.yaml"
+          fi
+          if [ ! -d "${COHERENCE_ROOT}/drift" ]; then
+            echo "::warning::No drift directory found at ${COHERENCE_ROOT}/drift/"
+          fi
+
       - name: Generate Rollup
+        env:
+          TELEMETRY_OUT_DIR: ${{ steps.resolve.outputs.out_dir }}
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
+            const root = process.env.COHERENCE_ROOT;
+            const outDir = process.env.TELEMETRY_OUT_DIR;
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             const warnDate = new Date(today);
@@ -34,7 +76,7 @@ jobs:
             const expiredList = [];
             const nearExpiryList = [];
 
-            const asmPath = 'coherence/intel/assumptions.yaml';
+            const asmPath = `${root}/intel/assumptions.yaml`;
             if (fs.existsSync(asmPath)) {
               const content = fs.readFileSync(asmPath, 'utf8');
               const blocks = content.split(/^\s*- id:/m).slice(1);
@@ -61,7 +103,7 @@ jobs:
             // ── Drift ──
             let openDriftCount = 0;
             const openDrifts = [];
-            const driftDir = 'coherence/drift';
+            const driftDir = `${root}/drift`;
             if (fs.existsSync(driftDir)) {
               const driftFiles = fs.readdirSync(driftDir)
                 .filter(f => /^DRIFT-[\d-]+\.md$/.test(f));
@@ -82,7 +124,7 @@ jobs:
 
             // ── Score ──
             let score = null;
-            const scorePath = 'coherence/telemetry/coherence_score.json';
+            const scorePath = `${root}/telemetry/coherence_score.json`;
             if (fs.existsSync(scorePath)) {
               try { score = JSON.parse(fs.readFileSync(scorePath, 'utf8')); } catch {}
             }
@@ -95,7 +137,7 @@ jobs:
               drift: { open: openDriftCount },
               score: score ? score.score : null,
             };
-            fs.writeFileSync('coherence/telemetry/weekly_rollup.json',
+            fs.writeFileSync(`${outDir}/weekly_rollup.json`,
               JSON.stringify(rollup, null, 2) + '\n');
 
             // ── Write top risks ──
@@ -130,13 +172,15 @@ jobs:
             }
 
             lines.push('');
-            fs.writeFileSync('coherence/telemetry/top_risks.md', lines.join('\n'));
+            fs.writeFileSync(`${outDir}/top_risks.md`, lines.join('\n'));
 
       - name: Commit Rollup
+        env:
+          TELEMETRY_OUT_DIR: ${{ steps.resolve.outputs.out_dir }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add coherence/telemetry/weekly_rollup.json coherence/telemetry/top_risks.md
+          git add "${TELEMETRY_OUT_DIR}/weekly_rollup.json" "${TELEMETRY_OUT_DIR}/top_risks.md"
           git diff --staged --quiet && echo "No changes to commit" && exit 0
           git commit -m "chore: weekly coherence rollup [skip ci]"
           git push

@@ -3,6 +3,16 @@ set -euo pipefail
 
 # coherence-new-dlr — Create a new DLR with date-based ID
 # Usage: ./coherence-new-dlr "Title of Decision"
+# Always writes to coherence/decisions/ (production only).
+
+# Safety guard: refuse to create files when running against sample data
+COHERENCE_ROOT="${COHERENCE_ROOT:-coherence}"
+if [ "$COHERENCE_ROOT" != "coherence" ]; then
+  echo "ERROR: coherence-new-dlr is a production-only tool."
+  echo "       COHERENCE_ROOT is set to '${COHERENCE_ROOT}' — refusing to create files."
+  echo "       Unset COHERENCE_ROOT or set it to 'coherence' to create new DLRs."
+  exit 1
+fi
 
 DIR="coherence/decisions"
 INDEX="$DIR/INDEX.md"

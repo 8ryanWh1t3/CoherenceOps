@@ -4,6 +4,23 @@ All notable changes to CoherenceOps are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.4.1] - 2026-02-20
+
+### Added
+- Sample Mode root selector (`COHERENCE_ROOT` environment variable)
+- Generated `telemetry_out/` directory for non-coherence roots
+- `bin/coherence-root` helper — resolve and validate root + output directory
+- Workflows now support `workflow_dispatch` with `coherence_root` input
+- `docs/SAMPLE_MODE.md` — full documentation for sample mode
+- Safety guards in `bin/coherence-new-dlr` and `bin/coherence-new-drift` for sample mode
+
+### Changed
+- `bin/coherence-check` reads from `${COHERENCE_ROOT}` instead of hardcoded `coherence/`
+- `coherence-weekly-rollup.yml` writes to `${TELEMETRY_OUT_DIR}`
+- `coherence-score.yml` writes to `${TELEMETRY_OUT_DIR}`
+- `drift-auto-detect.yml` reads from `${COHERENCE_ROOT}`
+- README updated with sample pack usage section
+
 ## [0.4.0] - 2026-02-20
 
 ### Added

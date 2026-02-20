@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# coherence-root — Resolve and validate COHERENCE_ROOT and TELEMETRY_OUT_DIR
+# Usage: COHERENCE_ROOT=sample_data/game_studio_aaa ./coherence-root
+
+RED='\033[0;31m'
+GRN='\033[0;32m'
+RST='\033[0m'
+
+COHERENCE_ROOT="${COHERENCE_ROOT:-coherence}"
+
+# Compute TELEMETRY_OUT_DIR
+if [ -n "${TELEMETRY_OUT_DIR:-}" ]; then
+  : # explicitly set, keep it
+elif [ "$COHERENCE_ROOT" = "coherence" ]; then
+  TELEMETRY_OUT_DIR="coherence/telemetry"
+else
+  sanitized=$(echo "$COHERENCE_ROOT" | tr '/' '_')
+  TELEMETRY_OUT_DIR="telemetry_out/${sanitized}"
+fi
+
+echo "CoherenceOps Root Resolver"
+echo "=========================="
+echo ""
+echo "  COHERENCE_ROOT:    ${COHERENCE_ROOT}"
+echo "  TELEMETRY_OUT_DIR: ${TELEMETRY_OUT_DIR}"
+echo ""
+
+# Validate required paths
+ERRORS=0
+
+ASM_PATH="${COHERENCE_ROOT}/intel/assumptions.yaml"
+if [ -f "$ASM_PATH" ]; then
+  printf "  ${GRN}OK${RST}  %s\n" "$ASM_PATH"
+else
+  printf "  ${RED}MISSING${RST}  %s\n" "$ASM_PATH"
+  ERRORS=$((ERRORS + 1))
+fi
+
+DRIFT_DIR="${COHERENCE_ROOT}/drift"
+if [ -d "$DRIFT_DIR" ]; then
+  printf "  ${GRN}OK${RST}  %s/\n" "$DRIFT_DIR"
+else
+  printf "  ${RED}MISSING${RST}  %s/\n" "$DRIFT_DIR"
+  ERRORS=$((ERRORS + 1))
+fi
+
+echo ""
+
+if [ "$ERRORS" -gt 0 ]; then
+  printf "${RED}Validation failed: %d required path(s) missing.${RST}\n" "$ERRORS"
+  echo "Ensure COHERENCE_ROOT points to a directory with intel/assumptions.yaml and drift/."
+  exit 1
+else
+  printf "${GRN}Root is valid.${RST}\n"
+fi

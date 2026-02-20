@@ -3,6 +3,7 @@ set -euo pipefail
 
 # coherence-check — Run coherence gates locally
 # Usage: ./coherence-check
+#        COHERENCE_ROOT=sample_data/game_studio_aaa ./coherence-check
 # Exit code: 0 = all pass, 1 = failures detected
 
 RED='\033[0;31m'
@@ -26,12 +27,18 @@ result() {
   esac
 }
 
-echo "CoherenceOps Check v0.4.0"
+# ── Resolve COHERENCE_ROOT ──
+COHERENCE_ROOT="${COHERENCE_ROOT:-coherence}"
+
+echo "CoherenceOps Check v0.4.1"
 echo "========================="
+if [ "$COHERENCE_ROOT" != "coherence" ]; then
+  echo "  COHERENCE_ROOT: ${COHERENCE_ROOT}"
+fi
 echo ""
 
 # ── Gate 1: Assumption Expiry ──
-ASM_FILE="coherence/intel/assumptions.yaml"
+ASM_FILE="${COHERENCE_ROOT}/intel/assumptions.yaml"
 if [ ! -f "$ASM_FILE" ]; then
   result "Assumption Expiry" "skip" "No assumptions.yaml found"
 else
@@ -82,7 +89,7 @@ else
 fi
 
 # ── Gate 2: Drift Format Validation ──
-DRIFT_DIR="coherence/drift"
+DRIFT_DIR="${COHERENCE_ROOT}/drift"
 if [ ! -d "$DRIFT_DIR" ]; then
   result "Drift Format" "skip" "No drift directory"
 else
@@ -105,7 +112,7 @@ else
         drift_issues="$drift_issues $base: missing$missing;"
       fi
       # Check severity value
-      sev=$(grep -A1 "## Severity" "$df" 2>/dev/null | tail -1 | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
+      sev=$(grep -A1 "## Severity" "$df" 2>/dev/null | tail -1 | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]' || true)
       if [ -n "$sev" ] && ! echo "$sev" | grep -qE '^(low|medium|critical)$'; then
         drift_issues="$drift_issues $base: invalid severity '$sev';"
       fi
@@ -126,15 +133,15 @@ if [ -z "$staged" ]; then
   staged=$(git diff --name-only 2>/dev/null || echo "")
 fi
 
-canon_changed=$(echo "$staged" | grep '^coherence/canon/' | grep -v 'changelog.md' || true)
-changelog_changed=$(echo "$staged" | grep '^coherence/canon/changelog.md' || true)
+canon_changed=$(echo "$staged" | grep "^${COHERENCE_ROOT}/canon/" | grep -v 'changelog.md' || true)
+changelog_changed=$(echo "$staged" | grep "^${COHERENCE_ROOT}/canon/changelog.md" || true)
 
 if [ -z "$canon_changed" ]; then
   result "Canon Changelog" "skip" "No canon files changed"
 elif [ -n "$changelog_changed" ]; then
   result "Canon Changelog" "pass" "Canon changed with changelog entry"
 else
-  result "Canon Changelog" "fail" "Canon changed without changelog entry — update coherence/canon/changelog.md"
+  result "Canon Changelog" "fail" "Canon changed without changelog entry — update ${COHERENCE_ROOT}/canon/changelog.md"
 fi
 
 # ── Gate 4: DLR Advisory ──
@@ -142,7 +149,7 @@ staged_count=0
 if [ -n "$staged" ]; then
   staged_count=$(echo "$staged" | grep -c '.' || true)
 fi
-touches_gov=$(echo "$staged" | grep -E '^coherence/(canon|intel)/' || true)
+touches_gov=$(echo "$staged" | grep -E "^${COHERENCE_ROOT}/(canon|intel)/" || true)
 
 if [ "$staged_count" -gt 10 ] || [ -n "$touches_gov" ]; then
   result "DLR Advisory" "warn" "Changes look major ($staged_count files). Ensure a DLR is linked in your PR."
