@@ -1,0 +1,87 @@
+{
+  "week": "W12",
+  "period": "2026-03-17 to 2026-03-21",
+  "generated": "2026-03-21T23:59:00Z",
+  "kpis": {
+    "dau": {
+      "global": 1100000,
+      "na": 418000,
+      "eu": 299200,
+      "apac": 253000,
+      "latam": 129800
+    },
+    "ccu_peak": {
+      "global": 374000,
+      "na": 146520,
+      "eu": 97240,
+      "apac": 86020,
+      "latam": 44220
+    },
+    "revenue_weekly_usd": {
+      "total": 8400000,
+      "mtx": 4536000,
+      "battle_pass": 2520000,
+      "esports": 1344000
+    },
+    "arppu_usd": {
+      "global": 13.40,
+      "na": 16.00,
+      "eu": 10.20,
+      "apac": 12.30,
+      "latam": 9.50
+    },
+    "churn_rate_pct": {
+      "global": 3.4,
+      "na": 2.0,
+      "eu": 5.8,
+      "apac": 3.1,
+      "latam": 2.7
+    },
+    "d7_retention_pct": {
+      "global": 39.8,
+      "na": 46.5,
+      "eu": 32.4,
+      "apac": 38.2,
+      "latam": 37.1
+    },
+    "sai_score": 58,
+    "patch_sla_hours": 6.8,
+    "build_time_p95_min": 22.1,
+    "latency_p50_ms": {
+      "na": 23,
+      "eu": 29,
+      "apac": 52,
+      "latam": 54
+    },
+    "latency_p99_ms": {
+      "na": 70,
+      "eu": 88,
+      "apac": 148,
+      "latam": 155
+    },
+    "refund_rate_pct": 3.2,
+    "support_tickets": 8900
+  },
+  "coherence_score": {
+    "total": 64,
+    "components": {
+      "assumption_health": 58,
+      "decision_freshness": 72,
+      "drift_response": 61,
+      "canon_alignment": 65
+    }
+  },
+  "drift_signals": [
+    "DRIFT-0013",
+    "DRIFT-0015",
+    "DRIFT-0016",
+    "DRIFT-0018"
+  ],
+  "decisions_made": [
+    "DLR-0034",
+    "DLR-0035",
+    "DLR-0036"
+  ],
+  "assumptions_expired": [],
+  "notes": "Recovery phase initiated. Kill switch invoked on EU pricing — all cosmetic bundles rolled back to NA-parity pricing within 2 hours of DLR-0034 ratification. EU DAU stabilized at 299K (still -14% vs baseline but no longer falling). EU churn slowed from 8.2% to 5.8%. Refund rate halved from 6.8% to 3.2% as goodwill credit program (DLR-0035) took effect. JP localization hotfix deployed, resolving DRIFT-0017 (currency symbol errors). SAI dropped to 58 as APAC capacity expansion (DLR-0031) completed — Tokyo relay latency normalized. DRIFT-0018 flagged sponsor contract exposure: two esports sponsors (combined $30M annual) flagged 'brand safety' concerns over the pricing controversy. DLR-0036 ratified sponsor communication protocol and renegotiation timeline. Canon alignment improving as pricing canon updated, but EU trust deficit persists."
+}

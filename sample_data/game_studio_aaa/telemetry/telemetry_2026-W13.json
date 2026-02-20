@@ -1,0 +1,85 @@
+{
+  "week": "W13",
+  "period": "2026-03-24 to 2026-03-27",
+  "generated": "2026-03-27T23:59:00Z",
+  "kpis": {
+    "dau": {
+      "global": 1150000,
+      "na": 425500,
+      "eu": 310500,
+      "apac": 270250,
+      "latam": 143750
+    },
+    "ccu_peak": {
+      "global": 391000,
+      "na": 148580,
+      "eu": 101270,
+      "apac": 93990,
+      "latam": 47160
+    },
+    "revenue_weekly_usd": {
+      "total": 8900000,
+      "mtx": 4806000,
+      "battle_pass": 2670000,
+      "esports": 1424000
+    },
+    "arppu_usd": {
+      "global": 13.80,
+      "na": 16.10,
+      "eu": 11.40,
+      "apac": 12.50,
+      "latam": 9.70
+    },
+    "churn_rate_pct": {
+      "global": 2.6,
+      "na": 1.7,
+      "eu": 4.1,
+      "apac": 2.5,
+      "latam": 2.5
+    },
+    "d7_retention_pct": {
+      "global": 42.6,
+      "na": 48.8,
+      "eu": 38.0,
+      "apac": 40.1,
+      "latam": 38.9
+    },
+    "sai_score": 45,
+    "patch_sla_hours": 5.1,
+    "build_time_p95_min": 19.8,
+    "latency_p50_ms": {
+      "na": 22,
+      "eu": 28,
+      "apac": 47,
+      "latam": 53
+    },
+    "latency_p99_ms": {
+      "na": 68,
+      "eu": 84,
+      "apac": 132,
+      "latam": 150
+    },
+    "refund_rate_pct": 1.4,
+    "support_tickets": 5400
+  },
+  "coherence_score": {
+    "total": 76,
+    "components": {
+      "assumption_health": 72,
+      "decision_freshness": 80,
+      "drift_response": 74,
+      "canon_alignment": 78
+    }
+  },
+  "drift_signals": [
+    "DRIFT-0016",
+    "DRIFT-0018",
+    "DRIFT-0019"
+  ],
+  "decisions_made": [
+    "DLR-0037",
+    "DLR-0038"
+  ],
+  "assumptions_expired": [],
+  "notes": "Stabilization progressing. DAU recovered to 1.15M (96% of baseline). NA fully recovered. EU DAU at 310K — still 11% below baseline but trending upward week-over-week. EU D7 retention at 38.0% (target 42%, but improving from 28.1% nadir in W11). Cosmetic rebalance launched (DLR-0037): 120 items repriced with transparent regional parity. Community reception cautiously positive. LATAM showing unexpected strength — DAU and ARPPU both slightly above baseline, driven by Brazilian tournament viewership halo. Refund rate normalizing at 1.4% (approaching 0.4% baseline). SAI at 45 — infrastructure stable post-APAC expansion. DRIFT-0016 (regulatory) still active: BfJ formal review expected within 60 days, French DGCCRF monitoring. DRIFT-0018 (sponsor exposure) still active: renegotiation with NovaTech and Pulse Energy ongoing, combined $30M at risk. DRIFT-0019 flagged churn model degradation — W11 churn event broke the predictive model, needs retraining on post-crisis cohorts. DLR-0038 ratified churn model rebuild with 21-day timeline."
+}

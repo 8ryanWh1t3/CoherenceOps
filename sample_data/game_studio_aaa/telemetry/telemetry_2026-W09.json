@@ -1,0 +1,78 @@
+{
+  "week": "W09",
+  "period": "2026-02-24 to 2026-02-28",
+  "generated": "2026-02-28T23:59:00Z",
+  "kpis": {
+    "dau": {
+      "global": 1200000,
+      "na": 432000,
+      "eu": 348000,
+      "apac": 276000,
+      "latam": 144000
+    },
+    "ccu_peak": {
+      "global": 420000,
+      "na": 151200,
+      "eu": 121800,
+      "apac": 96600,
+      "latam": 50400
+    },
+    "revenue_weekly_usd": {
+      "total": 9200000,
+      "mtx": 5060000,
+      "battle_pass": 2760000,
+      "esports": 1380000
+    },
+    "arppu_usd": {
+      "global": 14.50,
+      "na": 16.20,
+      "eu": 14.80,
+      "apac": 12.40,
+      "latam": 9.60
+    },
+    "churn_rate_pct": {
+      "global": 1.8,
+      "na": 1.5,
+      "eu": 1.7,
+      "apac": 2.1,
+      "latam": 2.4
+    },
+    "d7_retention_pct": {
+      "global": 48.2,
+      "na": 51.0,
+      "eu": 49.5,
+      "apac": 44.8,
+      "latam": 42.1
+    },
+    "sai_score": 34,
+    "patch_sla_hours": 4.2,
+    "build_time_p95_min": 18.5,
+    "latency_p50_ms": {
+      "na": 22,
+      "eu": 28,
+      "apac": 45,
+      "latam": 52
+    },
+    "latency_p99_ms": {
+      "na": 68,
+      "eu": 82,
+      "apac": 125,
+      "latam": 148
+    },
+    "refund_rate_pct": 0.4,
+    "support_tickets": 3200
+  },
+  "coherence_score": {
+    "total": 88,
+    "components": {
+      "assumption_health": 91,
+      "decision_freshness": 86,
+      "drift_response": 89,
+      "canon_alignment": 85
+    }
+  },
+  "drift_signals": [],
+  "decisions_made": [],
+  "assumptions_expired": [],
+  "notes": "Baseline week. All KPIs within normal operating bands. Eclipse Dominion Season 7 steady-state. EU and NA retention strong. LATAM engagement growing but ARPPU remains lowest across regions. Infrastructure healthy — no drift signals, all assumptions current. Pre-tournament calm."
+}

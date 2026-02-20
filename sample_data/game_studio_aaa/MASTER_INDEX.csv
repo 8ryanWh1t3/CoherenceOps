@@ -1,0 +1,101 @@
+record_type,id,date,title,owner,region,studio,severity,status,links
+DLR,DLR-20260224-001,2026-02-24,Global build pipeline unification,@eng-lead,Global,LA+Montreal+Tokyo,medium,ratified,ASM-0001;ASM-0002
+DLR,DLR-20260224-002,2026-02-24,Server infrastructure scaling policy,@infra-lead,Global,LA,medium,ratified,ASM-0001;TELEMETRY-W09
+DLR,DLR-20260224-003,2026-02-25,Season 4 Battle Pass pricing,@monetization-lead,Global,Berlin,high,ratified,CLAIM-0001;ASM-0004
+DLR,DLR-20260224-004,2026-02-25,Weapon balance framework v2,@balance-lead,Global,Montreal,medium,ratified,CLAIM-0002;CANON-v1.0
+DLR,DLR-20260226-001,2026-02-26,Season 4 narrative arc approval,@narrative-lead,Global,Montreal,medium,ratified,CANON-v1.0;CLAIM-0003
+DLR,DLR-20260228-001,2026-02-28,Patch Tuesday SLA definition,@ops-lead,Global,LA,high,ratified,ASM-0003;EVID-0001
+DLR,DLR-20260228-002,2026-02-28,Anti-cheat integration upgrade,@security-lead,Global,Warsaw,medium,ratified,EVID-0002
+DLR,DLR-20260302-001,2026-03-02,Tournament infrastructure scaling plan,@infra-lead,NA+APAC,LA+Tokyo,sev-1,ratified,ASM-0005;DRIFT-20260302-001;TELEMETRY-W10
+DLR,DLR-20260302-002,2026-03-02,Tournament dedicated server provisioning,@infra-lead,Global,Tokyo,sev-1,ratified,DLR-20260302-001;DRIFT-20260302-001
+DLR,DLR-20260302-003,2026-03-03,Tournament balance patch freeze,@balance-lead,Global,Montreal,high,ratified,DLR-20260302-001;CLAIM-0004
+DLR,DLR-20260304-001,2026-03-04,Latency compensation algorithm update APAC,@netcode-lead,APAC,Tokyo,sev-1,ratified,DRIFT-20260304-001;TELEMETRY-W10
+DLR,DLR-20260304-002,2026-03-04,Competitive integrity reporting system,@fairness-lead,Global,LA,high,ratified,DRIFT-20260305-001;CLAIM-0005
+DLR,DLR-20260306-001,2026-03-06,Auto-scaling threshold adjustment,@infra-lead,Global,LA,high,ratified,DRIFT-20260302-001;DLR-20260302-001
+DLR,DLR-20260306-002,2026-03-06,Emergency hotfix bypass protocol,@ops-lead,Global,LA,sev-1,ratified,DLR-20260228-001;EVID-0003
+DLR,DLR-20260306-003,2026-03-06,Cross-region matchmaking rebalance,@netcode-lead,Global,Tokyo+LA,high,ratified,DRIFT-20260302-002;DRIFT-20260304-001
+DLR,DLR-20260306-004,2026-03-06,Competitive fairness protest response,@esports-lead,Global,LA,high,ratified,DRIFT-20260305-001;DRIFT-20260305-002
+DLR,DLR-20260309-001,2026-03-09,Emergency MTX rollback EU,@monetization-lead,EU,Berlin,sev-1,ratified,DRIFT-20260309-001;DRIFT-20260310-001;DRIFT-20260310-002;CANON-v1.2
+DLR,DLR-20260309-002,2026-03-09,Emergency localization sync,@loc-lead,EU+APAC,Berlin+Warsaw,sev-1,ratified,DLR-20260309-001;DRIFT-20260320-001
+DLR,DLR-20260309-003,2026-03-10,Localization divergence correction policy,@narrative-lead,Global,Montreal,high,in_progress,DLR-20260309-002;CANON-v1.2
+DLR,DLR-20260311-001,2026-03-11,Loot box conversion to direct purchase EU,@monetization-lead,EU,Berlin,sev-1,ratified,DLR-20260309-001;DRIFT-20260309-001;CLAIM-0006
+DLR,DLR-20260311-002,2026-03-11,Pay-to-win allegation response plan,@comms-lead,Global,LA,high,ratified,DRIFT-20260311-001;CLAIM-0007
+DLR,DLR-20260313-001,2026-03-13,Patch cadence SLA revision,@ops-lead,Global,LA,high,ratified,DLR-20260228-001;DRIFT-20260313-001
+DLR,DLR-20260313-002,2026-03-13,Ranked mode fairness audit,@balance-lead,Global,Montreal,medium,ratified,DRIFT-20260305-001;EVID-0004
+DLR,DLR-20260313-003,2026-03-13,Cross-studio hotfix cadence alignment,@ops-lead,Global,LA+Montreal+Tokyo,high,ratified,DLR-20260306-002;DRIFT-20260313-001
+DLR,DLR-20260316-001,2026-03-16,Refund policy revision EU APAC,@finance-lead,EU+APAC,Berlin,high,ratified,DLR-20260309-001;DRIFT-20260310-001
+DLR,DLR-20260316-003,2026-03-17,CDN failover architecture redesign,@infra-lead,Global,LA+Tokyo,high,ratified,DRIFT-20260304-001;ASM-0009
+DLR,DLR-20260320-001,2026-03-20,Lore consistency framework,@narrative-lead,Global,Montreal,medium,ratified,DRIFT-20260320-001;CANON-v1.3
+DLR,DLR-20260320-002,2026-03-20,Automated regression gate for patches,@qa-lead,Global,Warsaw,high,ratified,DRIFT-20260319-001;EVID-0005
+DLR,DLR-20260323-001,2026-03-23,Studio handoff protocol for live patches,@ops-lead,Global,LA+Montreal,medium,ratified,DLR-20260313-003;DLR-20260306-002
+DLR,DLR-20260323-002,2026-03-23,Regional server capacity planning Q2,@infra-lead,Global,LA+Tokyo,medium,ratified,ASM-0010;TELEMETRY-W12
+DLR,DLR-20260323-003,2026-03-24,Balance patch preview program,@esports-lead,Global,Montreal,medium,ratified,DLR-20260302-003;CLAIM-0008
+DLR,DLR-20260325-001,2026-03-25,Cosmetic pricing rebalance post-backlash,@monetization-lead,Global,Berlin,high,ratified,DLR-20260309-001;DRIFT-20260317-001
+DLR,DLR-20260327-001,2026-03-27,Narrative review gate for live events,@narrative-lead,Global,Montreal,medium,ratified,DRIFT-20260320-001;CANON-v1.4
+DLR,DLR-20260327-002,2026-03-27,Global incident response SOP,@ops-lead,Global,LA,high,ratified,DLR-20260306-002;DLR-20260313-003;EVID-0003
+DLR,DLR-20260327-003,2026-03-27,Esports rulebook update v3,@esports-lead,Global,LA,medium,ratified,DLR-20260306-004;CLAIM-0009
+DRIFT,DRIFT-20260225-001,2026-02-25,Server latency spike APAC,@infra-lead,APAC,Tokyo,medium,patched,TELEMETRY-W09;ASM-0001
+DRIFT,DRIFT-20260227-001,2026-02-27,Build pipeline failure Montreal,@eng-lead,NA,Montreal,low,patched,DLR-20260224-001
+DRIFT,DRIFT-20260228-001,2026-02-28,ASM-0003 patch SLA near expiry,@ops-lead,Global,LA,low,patched,ASM-0003;DLR-20260228-001
+DRIFT,DRIFT-20260302-001,2026-03-02,Tournament CCU exceeded projections 340%,@infra-lead,Global,LA+Tokyo,sev-1,patched,ASM-0005;DLR-20260302-001;TELEMETRY-W10
+DRIFT,DRIFT-20260302-002,2026-03-02,Matchmaking queue time spike (cascade from 302-001),@netcode-lead,Global,Tokyo+LA,high,patched,DRIFT-20260302-001;DLR-20260306-003
+DRIFT,DRIFT-20260303-001,2026-03-03,OrionTel sponsor uptime clause at risk,@esports-lead,NA,LA,high,patched,DRIFT-20260302-001;CLAIM-0005
+DRIFT,DRIFT-20260304-001,2026-03-04,APAC latency >120ms during tournament,@netcode-lead,APAC,Tokyo,sev-1,patched,DRIFT-20260302-001;DLR-20260304-001
+DRIFT,DRIFT-20260305-001,2026-03-05,Competitive fairness complaints cascade,@fairness-lead,Global,LA,high,patched,DRIFT-20260304-001;DLR-20260304-002
+DRIFT,DRIFT-20260305-002,2026-03-05,SAI spike to 82 (cascade from 305-001),@ops-lead,Global,LA,sev-1,patched,DRIFT-20260305-001;DLR-20260306-004
+DRIFT,DRIFT-20260306-001,2026-03-06,VantaFuel sponsor suspension threat,@esports-lead,Global,LA,sev-1,patched,DRIFT-20260303-001;CLAIM-0005
+DRIFT,DRIFT-20260309-001,2026-03-09,EU loot box regulatory notice,@monetization-lead,EU,Berlin,sev-1,in_progress,DLR-20260309-001;DLR-20260311-001;EVID-0003
+DRIFT,DRIFT-20260310-001,2026-03-10,MTX refund rate spike EU +340%,@finance-lead,EU,Berlin,sev-1,patched,DRIFT-20260309-001;DLR-20260316-001
+DRIFT,DRIFT-20260310-002,2026-03-10,DAU drop EU -18% (cascade from 310-001),@data-lead,EU,Berlin,high,in_progress,DRIFT-20260310-001;TELEMETRY-W11
+DRIFT,DRIFT-20260311-001,2026-03-11,Canon contradiction monetization ethics,@narrative-lead,Global,Montreal,high,patched,DRIFT-20260309-001;CANON-v1.2
+DRIFT,DRIFT-20260312-001,2026-03-12,ARPPU collapse EU (cascade from 310-002),@monetization-lead,EU,Berlin,sev-1,in_progress,DRIFT-20260310-002;TELEMETRY-W11
+DRIFT,DRIFT-20260313-001,2026-03-13,Patch cadence SLA breached 48h to 96h,@ops-lead,Global,LA,high,patched,DLR-20260228-001;DLR-20260313-001
+DRIFT,DRIFT-20260313-002,2026-03-13,Sponsor renegotiation triggered (cascade),@esports-lead,Global,LA,sev-1,in_progress,DRIFT-20260306-001;DRIFT-20260313-001
+DRIFT,DRIFT-20260316-001,2026-03-16,Rollback kill switch invoked MTX,@monetization-lead,EU,Berlin,high,patched,DLR-20260309-001;DRIFT-20260310-001
+DRIFT,DRIFT-20260317-001,2026-03-17,Cross-region pricing parity drift NA vs EU,@finance-lead,NA+EU,Berlin+LA,medium,in_progress,DLR-20260325-001;TELEMETRY-W12
+DRIFT,DRIFT-20260318-001,2026-03-18,ASM-0007 expired churn model outdated,@data-lead,Global,LA,medium,patched,ASM-0007;TELEMETRY-W12
+DRIFT,DRIFT-20260319-001,2026-03-19,QA pipeline Warsaw bottleneck,@qa-lead,EU,Warsaw,medium,in_progress,DLR-20260320-002;TELEMETRY-W12
+DRIFT,DRIFT-20260320-001,2026-03-20,Narrative localization divergence JP vs EN,@loc-lead,APAC,Tokyo+Montreal,medium,patched,CANON-v1.3;DLR-20260320-001
+DRIFT,DRIFT-20260323-001,2026-03-23,Recovery metrics below target D7 retention,@data-lead,EU,Berlin,medium,open,TELEMETRY-W12;TELEMETRY-W13
+DRIFT,DRIFT-20260325-001,2026-03-25,Residual pricing parity drift LATAM,@finance-lead,LATAM,Berlin,low,open,DRIFT-20260317-001;TELEMETRY-W13
+DRIFT,DRIFT-20260327-001,2026-03-27,Post-mortem 3 assumptions invalidated,@ops-lead,Global,LA,high,open,ASM-0005;ASM-0007;ASM-0012
+ASM,ASM-0001,2026-02-24,Server fleet handles 800K peak CCU,@infra-lead,Global,LA,medium,active,DLR-20260224-002;TELEMETRY-W09
+ASM,ASM-0002,2026-02-24,Build pipeline 95th-percentile under 45min,@eng-lead,Global,LA+Montreal,low,active,DLR-20260224-001
+ASM,ASM-0003,2026-02-24,Patch Tuesday SLA 48h response window,@ops-lead,Global,LA,high,active,DLR-20260228-001;DRIFT-20260228-001
+ASM,ASM-0004,2026-02-25,Battle Pass ARPPU $14.50 baseline,@monetization-lead,Global,Berlin,medium,active,DLR-20260224-003;CLAIM-0001
+ASM,ASM-0005,2026-02-25,Tournament CCU peak 620K,@infra-lead,NA+APAC,LA+Tokyo,high,expired,DLR-20260302-001;DRIFT-20260302-001
+ASM,ASM-0006,2026-02-26,Season 4 narrative arc no lore conflicts,@narrative-lead,Global,Montreal,medium,active,DLR-20260226-001;CANON-v1.0
+ASM,ASM-0007,2026-03-01,EU churn model valid through Q1,@data-lead,EU,Berlin,medium,expired,DRIFT-20260318-001;TELEMETRY-W10
+ASM,ASM-0008,2026-03-02,Anti-cheat false positive rate <0.1%,@security-lead,Global,Warsaw,medium,active,DLR-20260228-002;EVID-0002
+ASM,ASM-0009,2026-03-04,CDN failover time <30s,@infra-lead,Global,LA+Tokyo,high,active,DLR-20260316-003
+ASM,ASM-0010,2026-03-09,Q2 server capacity sufficient at current growth,@infra-lead,Global,LA+Tokyo,medium,active,DLR-20260323-002;TELEMETRY-W11
+ASM,ASM-0011,2026-03-11,Direct purchase conversion rate >60% of loot box,@monetization-lead,EU,Berlin,high,active,DLR-20260311-001;CLAIM-0006
+ASM,ASM-0012,2026-03-13,Ranked fairness perception stable post-patch,@balance-lead,Global,Montreal,medium,invalidated,DLR-20260313-002;DRIFT-20260327-001
+ASM,ASM-0013,2026-03-16,Refund policy change reduces churn 15%,@finance-lead,EU+APAC,Berlin,high,active,DLR-20260316-001;TELEMETRY-W12
+ASM,ASM-0014,2026-03-20,JP localization resync achievable in 1 sprint,@loc-lead,APAC,Tokyo,medium,active,DRIFT-20260320-001;CANON-v1.3
+ASM,ASM-0015,2026-03-23,D7 retention recovers to 42% by W14,@data-lead,EU,Berlin,high,active,DRIFT-20260323-001;TELEMETRY-W13
+CLAIM,CLAIM-0001,2026-02-24,Battle Pass pricing drives 12% ARPPU lift,@monetization-lead,Global,Berlin,medium,supported,ASM-0004;TELEMETRY-W09
+CLAIM,CLAIM-0002,2026-02-25,Weapon balance v2 reduces TTK complaints 30%,@balance-lead,Global,Montreal,medium,supported,DLR-20260224-004;EVID-0001
+CLAIM,CLAIM-0003,2026-02-26,Season 4 arc increases DAU 8% W09-W10,@narrative-lead,Global,Montreal,medium,supported,DLR-20260226-001;TELEMETRY-W10
+CLAIM,CLAIM-0004,2026-03-03,Balance patch freeze preserves competitive integrity,@balance-lead,Global,Montreal,high,supported,DLR-20260302-003;DRIFT-20260305-001
+CLAIM,CLAIM-0005,2026-03-04,Sponsor SLA renegotiation averts contract termination,@esports-lead,Global,LA,sev-1,contested,DRIFT-20260303-001;DRIFT-20260306-001
+CLAIM,CLAIM-0006,2026-03-11,Direct purchase model maintains 70% EU revenue,@monetization-lead,EU,Berlin,sev-1,supported,DLR-20260311-001;ASM-0011
+CLAIM,CLAIM-0007,2026-03-11,Comms response plan reduces negative sentiment 25%,@comms-lead,Global,LA,high,contested,DLR-20260311-002;DRIFT-20260311-001
+CLAIM,CLAIM-0008,2026-03-24,Preview program reduces post-patch complaints 40%,@esports-lead,Global,Montreal,medium,supported,DLR-20260323-003;EVID-0004
+CLAIM,CLAIM-0009,2026-03-27,Updated esports rulebook reduces protests 50%,@esports-lead,Global,LA,medium,supported,DLR-20260327-003;DLR-20260306-004
+CLAIM,CLAIM-0010,2026-03-27,Incident response SOP cuts MTTR 35%,@ops-lead,Global,LA,high,supported,DLR-20260327-002;EVID-0003
+CANON,CANON-v1.0,2026-02-24,Canon baseline Season 4 launch,@narrative-lead,Global,Montreal,n/a,current,DLR-20260226-001;DLR-20260224-004
+CANON,CANON-v1.1,2026-03-02,Canon update tournament rules and balance freeze,@narrative-lead,Global,Montreal,n/a,superseded,CANON-v1.0;DLR-20260302-003
+CANON,CANON-v1.2,2026-03-09,Canon update MTX policy and emergency rollback,@narrative-lead,Global,Montreal+Berlin,n/a,superseded,CANON-v1.1;DLR-20260309-001
+CANON,CANON-v1.3,2026-03-16,Canon update localization policy and pricing parity,@narrative-lead,Global,Montreal,n/a,superseded,CANON-v1.2;DLR-20260320-001
+CANON,CANON-v1.4,2026-03-27,Canon update narrative review gate and incident SOP,@narrative-lead,Global,Montreal,n/a,current,CANON-v1.3;DLR-20260327-001;DLR-20260327-002
+TELEMETRY,telemetry_2026-W09,2026-02-28,Weekly telemetry W09 baseline,@data-lead,Global,LA,n/a,published,ASM-0001;CLAIM-0001
+TELEMETRY,telemetry_2026-W10,2026-03-06,Weekly telemetry W10 tournament spike,@data-lead,Global,LA,n/a,published,DRIFT-20260302-001;ASM-0005
+TELEMETRY,telemetry_2026-W11,2026-03-13,Weekly telemetry W11 monetization backlash,@data-lead,Global,LA,n/a,published,DRIFT-20260310-001;DRIFT-20260312-001
+TELEMETRY,telemetry_2026-W12,2026-03-20,Weekly telemetry W12 recovery and canon fix,@data-lead,Global,LA,n/a,published,DRIFT-20260320-001;DRIFT-20260319-001
+TELEMETRY,telemetry_2026-W13,2026-03-27,Weekly telemetry W13 stabilization,@data-lead,Global,LA,n/a,published,DRIFT-20260323-001;DRIFT-20260325-001
+EVID,EVID-0001,2026-02-28,Patch SLA compliance audit trail,@ops-lead,Global,LA,n/a,verified,DLR-20260228-001;ASM-0003
+EVID,EVID-0002,2026-03-01,Anti-cheat false positive analysis report,@security-lead,Global,Warsaw,n/a,verified,DLR-20260228-002;ASM-0008
+EVID,EVID-0003,2026-03-09,EU regulatory notice scan and legal memo,@monetization-lead,EU,Berlin,n/a,verified,DRIFT-20260309-001;DLR-20260309-001
+EVID,EVID-0004,2026-03-15,Ranked fairness player survey results,@balance-lead,Global,Montreal,n/a,verified,DLR-20260313-002;CLAIM-0008
+EVID,EVID-0005,2026-03-20,Warsaw QA pipeline throughput analysis,@qa-lead,EU,Warsaw,n/a,verified,DRIFT-20260319-001;DLR-20260320-002

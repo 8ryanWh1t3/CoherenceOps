@@ -1,0 +1,328 @@
+# =============================================================================
+# CoherenceOps Sample Data -- AetherForge Interactive
+# Intel: Assumptions Register
+# Game: Eclipse Dominion (live-service competitive shooter)
+# Window: W09--W13 2026
+# =============================================================================
+
+assumptions:
+
+  - id: ASM-0001
+    statement: >
+      Teams across all five studios will adopt folder-based governance
+      workflows if CoherenceOps templates are pre-filled with studio-specific
+      defaults and linked to existing JIRA boards.
+    status: active
+    owner: ops@la.aetherforge.io
+    created: 2026-02-20
+    half_life_days: 90
+    expires: 2026-05-20
+    linked_decisions:
+      - DLR-20260224-001
+    blast_radius: low
+    financial_exposure_usd: 50000
+    expiry_action: >
+      Survey adoption metrics across studios. If <60% adoption by expiry,
+      escalate to VP Ops for mandatory rollout or abandon folder governance.
+
+  - id: ASM-0002
+    statement: >
+      APAC player-facing latency remains below 80ms median under normal
+      (non-tournament) load conditions, assuming current Tokyo and Singapore
+      PoP capacity and CDN configuration.
+    status: active
+    owner: netcode@tokyo.aetherforge.io
+    created: 2026-02-25
+    half_life_days: 60
+    expires: 2026-04-25
+    linked_decisions:
+      - DLR-20260226-001
+      - DLR-20260303-002
+    blast_radius: med
+    financial_exposure_usd: 2100000
+    expiry_action: >
+      Re-measure APAC P50/P99 latency. If >80ms, trigger capacity review
+      for Singapore PoP and evaluate HK fallback. APAC revenue at risk.
+
+  - id: ASM-0003
+    statement: >
+      Critical hotfix patches can be developed, QA'd, and deployed within
+      48 hours of incident declaration (48h SLA).
+    status: expired
+    status_reason: >
+      Breached during W11 -- weapon-balance hotfix took 96 hours due to
+      Warsaw QA backlog and Montreal holiday staffing gap.
+    owner: engineering@montreal.aetherforge.io
+    created: 2026-02-11
+    half_life_days: 30
+    expires: 2026-03-13
+    linked_decisions:
+      - DLR-20260310-001
+      - DLR-20260311-002
+    blast_radius: high
+    financial_exposure_usd: 8500000
+    expiry_action: >
+      Post-mortem required. Evaluate staffing overlap between Montreal and
+      Warsaw for 24/7 hotfix coverage. Update SLA or add surge capacity.
+
+  - id: ASM-0004
+    statement: >
+      Battle Pass pricing elasticity follows the model: a 10% price increase
+      results in no more than 3% player churn (+/- 1.2%) within 14 days.
+    status: active
+    status_reason: >
+      Model still used for planning but flagged for recalibration after
+      CLAIM-0007 showed 8.2% churn in EU during W11 price test.
+    owner: monetization@berlin.aetherforge.io
+    created: 2026-02-25
+    half_life_days: 90
+    expires: 2026-05-25
+    linked_decisions:
+      - DLR-20260309-001
+      - DLR-20260311-002
+    blast_radius: high
+    financial_exposure_usd: 14200000
+    expiry_action: >
+      Rebuild elasticity model using W11--W13 data. Commission external
+      econometrics review. Do not approve further price changes until
+      model R-squared recovers above 0.85.
+
+  - id: ASM-0005
+    statement: >
+      Tournament-weekend concurrent user (CCU) spikes will not exceed 2.0x
+      the normal Saturday peak, and existing autoscaler headroom is sufficient.
+    status: expired
+    status_reason: >
+      W10 Apex Invitational produced 2.8x spike. Autoscaler lagged by 9
+      minutes causing matchmaking queue times >180s for 22% of players.
+    owner: infra@la.aetherforge.io
+    created: 2026-02-01
+    half_life_days: 30
+    expires: 2026-03-02
+    linked_decisions:
+      - DLR-20260302-001
+      - DLR-20260302-002
+    blast_radius: high
+    financial_exposure_usd: 22000000
+    expiry_action: >
+      Revise autoscaler ceiling to 3.5x. Pre-provision dedicated tournament
+      capacity 2h before broadcast. Update sponsor SLA risk model.
+      Exposure includes sponsor penalties and infra emergency spend.
+
+  - id: ASM-0006
+    statement: >
+      EU loot-box regulatory action is delayed until Q3 2026 at earliest,
+      giving Berlin team until June to implement alternative monetization
+      paths.
+    status: expired
+    status_reason: >
+      Belgian Gaming Commission issued formal notice 2026-03-07 requiring
+      compliance plan within 60 days. Timeline accelerated to Q2 2026.
+    owner: compliance@berlin.aetherforge.io
+    created: 2026-02-18
+    half_life_days: 60
+    expires: 2026-04-20
+    linked_decisions:
+      - DLR-20260309-001
+      - DLR-20260311-001
+    blast_radius: high
+    financial_exposure_usd: 38000000
+    expiry_action: >
+      Activate contingency: disable loot-box mechanics in BE/NL immediately.
+      Accelerate "direct-purchase" SKU migration for full EU. Engage outside
+      counsel for GDPR Art.22 defense. EU MTX revenue at risk.
+
+  - id: ASM-0007
+    statement: >
+      The churn-elasticity regression model is accurate within +/- 5% of
+      observed churn for any single-variable price change up to 15%.
+    status: expired
+    status_reason: >
+      W12 post-mortem showed model predicted 3.0% churn; actual was 8.2%.
+      R-squared degraded from 0.94 (training) to 0.71 (validation on W11 data).
+    owner: data-science@la.aetherforge.io
+    created: 2026-02-18
+    half_life_days: 90
+    expires: 2026-03-18
+    linked_decisions:
+      - DLR-20260311-002
+      - DLR-20260318-001
+    blast_radius: high
+    financial_exposure_usd: 18000000
+    expiry_action: >
+      Freeze all pricing experiments until model is retrained. Commission
+      holdout A/B test in LATAM (lowest revenue risk) to recalibrate.
+      See EVID-0004 for regression diagnostics.
+
+  - id: ASM-0008
+    statement: >
+      Cross-region MTX pricing remains within 15% of purchasing-power-parity
+      (PPP) adjusted equivalence, preventing meaningful grey-market arbitrage.
+    status: active
+    owner: monetization@berlin.aetherforge.io
+    created: 2026-02-20
+    half_life_days: 120
+    expires: 2026-06-20
+    linked_decisions:
+      - DLR-20260224-002
+      - DLR-20260309-001
+    blast_radius: med
+    financial_exposure_usd: 6200000
+    expiry_action: >
+      Audit regional price deltas against latest IMF PPP tables. If any
+      region exceeds 15% delta, adjust SKU pricing or enable region-lock
+      on gifting. Monitor grey-market reseller forums.
+
+  - id: ASM-0009
+    statement: >
+      The VanguardShield anti-cheat system catches 99.5% of known exploit
+      signatures within one matchmaking cycle (< 90 seconds).
+    status: active
+    owner: anticheat@warsaw.aetherforge.io
+    created: 2026-02-28
+    half_life_days: 60
+    expires: 2026-04-28
+    linked_decisions:
+      - DLR-20260303-002
+      - DLR-20260310-002
+    blast_radius: high
+    financial_exposure_usd: 12000000
+    expiry_action: >
+      Run red-team exercise with latest public cheat binaries. If detection
+      rate falls below 99.0%, escalate to emergency signature update and
+      consider kernel-level driver deployment. Competitive integrity at risk.
+
+  - id: ASM-0010
+    statement: >
+      Esports sponsor contracts (OrionTel, VantaFuel) tolerate Sentiment
+      Anomaly Index (SAI) readings below 60 without triggering penalty
+      review clauses.
+    status: active
+    status_reason: >
+      At risk after W10 SAI peaked at 82 during Apex Invitational. Peak
+      lasted 6 hours (under OrionTel 48h threshold) but VantaFuel clause
+      uses instantaneous peak, not duration. Legal review in progress.
+    owner: partnerships@la.aetherforge.io
+    created: 2026-02-20
+    half_life_days: 90
+    expires: 2026-05-20
+    linked_decisions:
+      - DLR-20260302-001
+      - DLR-20260316-001
+    blast_radius: high
+    financial_exposure_usd: 36000000
+    expiry_action: >
+      Renegotiate SAI thresholds in both contracts at next renewal window.
+      Implement real-time SAI dashboard for partnerships team. Combined
+      sponsor value at risk ($18M OrionTel + $18M VantaFuel).
+      See EVID-0005 for clause analysis.
+
+  - id: ASM-0011
+    statement: >
+      Montreal studio can deliver weapon-balance and meta-tuning patches
+      within 24 hours of design-lock, given current staffing levels.
+    status: active
+    owner: gamedesign@montreal.aetherforge.io
+    created: 2026-02-28
+    half_life_days: 30
+    expires: 2026-03-28
+    linked_decisions:
+      - DLR-20260310-001
+      - DLR-20260312-001
+    blast_radius: med
+    financial_exposure_usd: 4100000
+    expiry_action: >
+      Measure actual design-lock-to-deploy times for last 5 patches. If
+      median exceeds 24h, request headcount increase or shift non-critical
+      work to external contractor. Revenue impact is from delayed fixes
+      extending negative-sentiment windows.
+
+  - id: ASM-0012
+    statement: >
+      Narrative canon (lore, character bios, event storylines) remains
+      consistent across all four localization regions (EN, DE, FR, JP).
+    status: expired
+    status_reason: >
+      W12 community report identified divergence in JP localization of
+      Season 3 "Rift Collapse" event -- JP version omitted a key plot
+      beat, causing lore-community backlash on JP forums.
+    owner: narrative@montreal.aetherforge.io
+    created: 2026-02-20
+    half_life_days: 90
+    expires: 2026-05-20
+    linked_decisions:
+      - DLR-20260318-002
+    blast_radius: med
+    financial_exposure_usd: 3200000
+    expiry_action: >
+      Implement canon-diff tooling across localization branches. Require
+      narrative sign-off on all L10n deliveries. JP patch to restore
+      omitted plot beat. Community comms to JP player base.
+
+  - id: ASM-0013
+    statement: >
+      CDN failover between primary and secondary edge nodes completes in
+      under 30 seconds globally, with no player-visible asset-loading errors.
+    status: active
+    owner: infra@la.aetherforge.io
+    created: 2026-02-25
+    half_life_days: 60
+    expires: 2026-04-25
+    linked_decisions:
+      - DLR-20260226-001
+      - DLR-20260302-002
+    blast_radius: high
+    financial_exposure_usd: 9800000
+    expiry_action: >
+      Run chaos-engineering failover drill across all regions. Measure
+      actual failover times and error rates. If >30s or error rate >0.1%,
+      renegotiate CDN SLA or add tertiary edge. Revenue impact modeled
+      on tournament-weekend worst case.
+
+  - id: ASM-0014
+    statement: >
+      Player refund rate remains below 2% of monthly MTX transactions,
+      within platform (Apple/Google/Steam) acceptable thresholds.
+    status: expired
+    status_reason: >
+      EU refund rate spiked to 6.8% in W11 following the MTX price increase.
+      Apple issued a warning notice; Google flagged the app for review.
+    owner: monetization@berlin.aetherforge.io
+    created: 2026-02-08
+    half_life_days: 30
+    expires: 2026-03-10
+    linked_decisions:
+      - DLR-20260311-002
+      - DLR-20260312-001
+    blast_radius: high
+    financial_exposure_usd: 11500000
+    expiry_action: >
+      Roll back EU price increase immediately. Issue goodwill credits to
+      affected players. Engage Apple/Google developer relations to prevent
+      app-store sanctions. Financial exposure includes potential
+      platform-imposed penalties and lost store featuring.
+
+  - id: ASM-0015
+    statement: >
+      Warsaw QA studio has sufficient capacity (headcount and test
+      infrastructure) to handle two concurrent patch-testing tracks
+      without exceeding 72-hour turnaround.
+    status: active
+    status_reason: >
+      Currently stressed -- W12 required three concurrent tracks (Season 3
+      hotfix + balance patch + anti-cheat update) and turnaround slipped
+      to 96 hours on the lowest-priority track.
+    owner: qa@warsaw.aetherforge.io
+    created: 2026-02-18
+    half_life_days: 60
+    expires: 2026-04-18
+    linked_decisions:
+      - DLR-20260310-001
+      - DLR-20260310-002
+    blast_radius: med
+    financial_exposure_usd: 2800000
+    expiry_action: >
+      Assess actual throughput vs. planned. If three-track concurrency
+      becomes regular, request budget for 4 additional QA engineers and
+      2 additional test-farm nodes. Consider outsourcing regression
+      suite to contract QA partner for overflow.

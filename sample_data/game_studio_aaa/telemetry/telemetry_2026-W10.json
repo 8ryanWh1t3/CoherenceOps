@@ -1,0 +1,86 @@
+{
+  "week": "W10",
+  "period": "2026-03-03 to 2026-03-07",
+  "generated": "2026-03-07T23:59:00Z",
+  "kpis": {
+    "dau": {
+      "global": 1800000,
+      "na": 648000,
+      "eu": 504000,
+      "apac": 432000,
+      "latam": 216000
+    },
+    "ccu_peak": {
+      "global": 1150000,
+      "na": 414000,
+      "eu": 322000,
+      "apac": 276000,
+      "latam": 138000
+    },
+    "revenue_weekly_usd": {
+      "total": 14100000,
+      "mtx": 7050000,
+      "battle_pass": 3384000,
+      "esports": 3666000
+    },
+    "arppu_usd": {
+      "global": 15.20,
+      "na": 17.40,
+      "eu": 15.60,
+      "apac": 13.10,
+      "latam": 10.20
+    },
+    "churn_rate_pct": {
+      "global": 2.1,
+      "na": 1.6,
+      "eu": 1.9,
+      "apac": 3.2,
+      "latam": 2.8
+    },
+    "d7_retention_pct": {
+      "global": 52.8,
+      "na": 56.3,
+      "eu": 54.1,
+      "apac": 47.2,
+      "latam": 46.0
+    },
+    "sai_score": 82,
+    "patch_sla_hours": 8.7,
+    "build_time_p95_min": 34.2,
+    "latency_p50_ms": {
+      "na": 28,
+      "eu": 35,
+      "apac": 112,
+      "latam": 64
+    },
+    "latency_p99_ms": {
+      "na": 85,
+      "eu": 108,
+      "apac": 340,
+      "latam": 195
+    },
+    "refund_rate_pct": 0.6,
+    "support_tickets": 9600
+  },
+  "coherence_score": {
+    "total": 71,
+    "components": {
+      "assumption_health": 62,
+      "decision_freshness": 78,
+      "drift_response": 68,
+      "canon_alignment": 76
+    }
+  },
+  "drift_signals": [
+    "DRIFT-0012",
+    "DRIFT-0013",
+    "DRIFT-0014"
+  ],
+  "decisions_made": [
+    "DLR-0031"
+  ],
+  "assumptions_expired": [
+    "ASM-0005"
+  ],
+  "notes": "Eclipse Dominion World Championship qualifying rounds drove DAU to 1.8M (+50%) and CCU peak to 1.15M (2.74x baseline). Revenue surged to $14.1M on esports MTX bundles. However, APAC infrastructure buckled — Tokyo relay latency p50 hit 112ms (2.5x baseline), p99 at 340ms. SAI spiked to 82 on cascading autoscaler failures. Support tickets tripled to 9,600 (APAC matchmaking complaints dominated). ASM-0005 ('APAC infra headroom sufficient for 2x load') expired — actual load hit 2.8x. DRIFT-0012 flagged APAC capacity gap. DRIFT-0013 flagged esports bundle pricing inconsistency across regions. DRIFT-0014 flagged build pipeline saturation at peak. DLR-0031 ratified emergency APAC capacity expansion."
+}

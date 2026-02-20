@@ -1,0 +1,193 @@
+# =============================================================================
+# CoherenceOps Sample Data -- AetherForge Interactive
+# Intel: Claims Registry
+# Game: Eclipse Dominion (live-service competitive shooter)
+# Window: W09--W13 2026
+# =============================================================================
+
+claims:
+
+  - id: CLAIM-0001
+    statement: >
+      Eclipse Dominion daily active users (DAU) exceed 2.1 million globally,
+      aggregated across NA, EU, APAC, and LATAM regions.
+    confidence: 0.95
+    confidence_basis: measured
+    owner: analytics@la.aetherforge.io
+    sources:
+      - DLR-20260224-001
+      - DRIFT-0001
+      - EVID-0001
+    economic_weight: 95
+    last_validated: 2026-03-10
+    notes: >
+      Derived from Mixpanel unique-login telemetry with cross-validation
+      against server-session counts. Excludes bot/test accounts.
+
+  - id: CLAIM-0002
+    statement: >
+      Average revenue per DAU (ARPDAU) by region: NA $1.42, EU $0.98,
+      APAC $0.76, LATAM $0.54. Blended global ARPDAU $1.04.
+    confidence: 0.92
+    confidence_basis: measured
+    owner: monetization@berlin.aetherforge.io
+    sources:
+      - DLR-20260224-002
+      - DLR-20260309-001
+      - DRIFT-0003
+    economic_weight: 90
+    last_validated: 2026-03-12
+    notes: >
+      Pulled from RevenueCat + Stripe reconciliation. LATAM figure includes
+      regional pricing tiers and PPP-adjusted SKU variants.
+
+  - id: CLAIM-0003
+    statement: >
+      Median server-to-client latency under normal load: NA 32ms, EU 45ms,
+      APAC 78ms, LATAM 89ms. P99 values are approximately 2.4x median.
+    confidence: 0.88
+    confidence_basis: measured
+    owner: netcode@tokyo.aetherforge.io
+    sources:
+      - DLR-20260226-001
+      - DRIFT-0005
+      - EVID-0001
+    economic_weight: 75
+    last_validated: 2026-03-08
+    notes: >
+      Measured via embedded client heartbeat probes over 7-day rolling window.
+      APAC figure elevated due to Singapore PoP saturation during peak hours.
+
+  - id: CLAIM-0004
+    statement: >
+      Season 3 Battle Pass conversion rate is 34% of eligible DAU (players
+      who logged in during the first 7 days of Season 3 launch window).
+    confidence: 0.91
+    confidence_basis: measured
+    owner: monetization@berlin.aetherforge.io
+    sources:
+      - DLR-20260303-001
+      - DRIFT-0008
+    economic_weight: 80
+    last_validated: 2026-03-14
+    notes: >
+      Conversion measured as first purchase event within Season 3 SKU group.
+      Includes standard and premium tiers. Premium-only conversion is 12.1%.
+
+  - id: CLAIM-0005
+    statement: >
+      Tournament weekend concurrent-user (CCU) spikes reach 2.8x the normal
+      Saturday peak, sustained for 4-6 hours during broadcast windows.
+    confidence: 0.85
+    confidence_basis: measured
+    owner: esports@la.aetherforge.io
+    sources:
+      - DLR-20260302-001
+      - DLR-20260302-002
+      - DRIFT-0006
+      - EVID-0001
+    economic_weight: 85
+    last_validated: 2026-03-03
+    notes: >
+      Based on W10 "Apex Invitational" telemetry. Prior assumption was 2.0x.
+      2.8x spike caused autoscaler lag and partial matchmaking degradation.
+      Post-W10 measurement; prior events showed 1.6x--2.1x range.
+
+  - id: CLAIM-0006
+    statement: >
+      Probability of EU regulatory action targeting loot-box mechanics exceeds
+      60% by end of Q2 2026, based on Belgian Gaming Commission signals and
+      pending Dutch legislative calendar.
+    confidence: 0.70
+    confidence_basis: inferred
+    owner: compliance@berlin.aetherforge.io
+    sources:
+      - DLR-20260309-001
+      - DLR-20260311-001
+      - DRIFT-0010
+      - EVID-0002
+    economic_weight: 90
+    last_validated: 2026-03-11
+    notes: >
+      Inference based on: (1) BGC formal notice received 2026-03-07,
+      (2) Dutch Kansspelautoriteit draft guidance leaked 2026-02-28,
+      (3) GDPR Art.22 automated-decision complaint filed against competitor.
+      Legal team assigns 60--75% range; 70% used as point estimate.
+
+  - id: CLAIM-0007
+    statement: >
+      A 10% increase in microtransaction (MTX) prices drives 8.2% player
+      churn in the EU region within 14 days of price change, significantly
+      exceeding the 3% predicted by the elasticity model.
+    confidence: 0.78
+    confidence_basis: measured
+    owner: monetization@berlin.aetherforge.io
+    sources:
+      - DLR-20260311-002
+      - DRIFT-0012
+      - DRIFT-0014
+      - EVID-0004
+    economic_weight: 95
+    last_validated: 2026-03-18
+    notes: >
+      Measured during W11 EU price adjustment (SKU-group "Luminary" bundles).
+      Churn defined as no login within 14 days post-purchase-attempt. Model
+      predicted 3.0% +/- 1.2%; actual 8.2% indicates structural model error.
+
+  - id: CLAIM-0008
+    statement: >
+      Peaks in the Sentiment Anomaly Index (SAI) above 70 correlate with a
+      -15% degradation in day-7 (D7) player retention, lagged by 3--5 days.
+    confidence: 0.72
+    confidence_basis: multi-source
+    owner: community@la.aetherforge.io
+    sources:
+      - DLR-20260310-001
+      - DRIFT-0009
+      - DRIFT-0011
+      - EVID-0003
+    economic_weight: 80
+    last_validated: 2026-03-15
+    notes: >
+      Multi-source: Reddit NLP sentiment (VADER + custom fine-tune), Twitter
+      volume anomaly detection, Discord report-ticket surge analysis. SAI is
+      a composite z-score. Correlation r = -0.68 (W09--W12 weekly data).
+
+  - id: CLAIM-0009
+    statement: >
+      OrionTel esports sponsorship contract is valued at $18M/year with a
+      performance penalty clause triggered when SAI exceeds 75 for more than
+      48 consecutive hours during a sponsored broadcast event.
+    confidence: 0.99
+    confidence_basis: measured
+    owner: partnerships@la.aetherforge.io
+    sources:
+      - DLR-20260302-001
+      - DLR-20260316-001
+      - EVID-0005
+    economic_weight: 95
+    last_validated: 2026-03-16
+    notes: >
+      Directly sourced from executed contract (OrionTel MSA clause 7.2).
+      Penalty is 15% of quarterly payment per qualifying breach event.
+      W10 SAI peaked at 82 for 6 hours -- under the 48h threshold but
+      flagged as near-miss. Legal review in progress.
+
+  - id: CLAIM-0010
+    statement: >
+      Following a server-side rollback of a major content patch, recovery to
+      baseline DAU levels takes 14--21 days based on historical precedent.
+    confidence: 0.65
+    confidence_basis: inferred
+    owner: liveops@la.aetherforge.io
+    sources:
+      - DLR-20260312-001
+      - DRIFT-0015
+      - DRIFT-0018
+    economic_weight: 70
+    last_validated: 2026-03-19
+    notes: >
+      Inferred from two prior rollback events (Season 1 W04, Season 2 W22).
+      Sample size is small (n=2). Season 1 recovery was 16 days; Season 2
+      was 19 days. Confidence is moderate due to limited data and differing
+      patch scopes. No controlled experiment possible.

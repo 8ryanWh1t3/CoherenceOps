@@ -1,0 +1,90 @@
+{
+  "week": "W11",
+  "period": "2026-03-10 to 2026-03-14",
+  "generated": "2026-03-14T23:59:00Z",
+  "kpis": {
+    "dau": {
+      "global": 1050000,
+      "na": 399000,
+      "eu": 285360,
+      "apac": 239400,
+      "latam": 126240
+    },
+    "ccu_peak": {
+      "global": 357000,
+      "na": 139230,
+      "eu": 91476,
+      "apac": 83790,
+      "latam": 42504
+    },
+    "revenue_weekly_usd": {
+      "total": 7800000,
+      "mtx": 4134000,
+      "battle_pass": 2340000,
+      "esports": 1326000
+    },
+    "arppu_usd": {
+      "global": 12.80,
+      "na": 15.90,
+      "eu": 8.90,
+      "apac": 12.10,
+      "latam": 9.40
+    },
+    "churn_rate_pct": {
+      "global": 4.6,
+      "na": 2.4,
+      "eu": 8.2,
+      "apac": 3.8,
+      "latam": 3.1
+    },
+    "d7_retention_pct": {
+      "global": 36.4,
+      "na": 44.2,
+      "eu": 28.1,
+      "apac": 35.6,
+      "latam": 34.8
+    },
+    "sai_score": 74,
+    "patch_sla_hours": 12.4,
+    "build_time_p95_min": 28.6,
+    "latency_p50_ms": {
+      "na": 24,
+      "eu": 31,
+      "apac": 68,
+      "latam": 55
+    },
+    "latency_p99_ms": {
+      "na": 72,
+      "eu": 94,
+      "apac": 185,
+      "latam": 162
+    },
+    "refund_rate_pct": 6.8,
+    "support_tickets": 14200
+  },
+  "coherence_score": {
+    "total": 52,
+    "components": {
+      "assumption_health": 41,
+      "decision_freshness": 55,
+      "drift_response": 48,
+      "canon_alignment": 64
+    }
+  },
+  "drift_signals": [
+    "DRIFT-0012",
+    "DRIFT-0013",
+    "DRIFT-0015",
+    "DRIFT-0016",
+    "DRIFT-0017"
+  ],
+  "decisions_made": [
+    "DLR-0032",
+    "DLR-0033"
+  ],
+  "assumptions_expired": [
+    "ASM-0007",
+    "ASM-0009"
+  ],
+  "notes": "Monetization backlash hit hard. EU DAU cratered 18% below baseline (285K vs 348K) after players discovered regional pricing disparity — EU cosmetic bundles were 40% more expensive than NA equivalents post-tournament. Reddit and social media amplified the story. EU ARPPU collapsed from $14.80 baseline to $8.90 as whales stopped spending. EU churn spiked to 8.2%. Refund rate surged to 6.8% globally (17x baseline). Support tickets hit 14,200 (4.4x baseline), dominated by refund requests and EU pricing complaints. German consumer protection authority (BfJ) issued informal inquiry. ASM-0007 ('EU pricing parity maintained within 10% of NA') expired — actual disparity was 40%. ASM-0009 ('Refund rate stays below 2%') expired. DRIFT-0015 flagged EU revenue cliff. DRIFT-0016 flagged regulatory exposure in DE/FR. DRIFT-0017 flagged JP localization errors in tournament store (wrong currency symbols). DLR-0032 ratified EU pricing audit. DLR-0033 ratified emergency refund policy expansion."
+}
