@@ -50,18 +50,21 @@ jobs:
             }
 
             // --- Check for DLR link in PR body ---
+            // Accept full path OR plain DLR ID (numeric or date-based)
             const body = pr.body || '';
-            const dlrMatch = body.match(/coherence\/decisions\/DLR-(\d{4})\.md/);
+            const pathMatch = body.match(/coherence\/decisions\/(DLR-[\d-]+)\.md/);
+            const plainMatch = body.match(/\b(DLR-\d{4,}(?:-\d+)?)\b/);
+            const dlrId = pathMatch ? pathMatch[1] : (plainMatch ? plainMatch[1] : null);
 
-            if (!dlrMatch) {
+            if (!dlrId) {
               core.setOutput('status', 'fail');
-              core.setOutput('message', 'Major PR has no DLR linked. Create a DLR in coherence/decisions/ and link it in the PR description.');
-              core.setFailed('Gate 1: Major PR requires a DLR link in the PR description.');
+              core.setOutput('message', 'Major PR has no DLR linked. Reference a DLR (e.g. DLR-0001 or coherence/decisions/DLR-0001.md) in the PR description.');
+              core.setFailed('Gate 1: Major PR requires a DLR reference in the PR description.');
               return;
             }
 
             // --- Verify DLR file exists in branch ---
-            const dlrPath = `coherence/decisions/DLR-${dlrMatch[1]}.md`;
+            const dlrPath = `coherence/decisions/${dlrId}.md`;
             const fileExists = changedPaths.includes(dlrPath) ||
               await github.rest.repos.getContent({
                 owner, repo, path: dlrPath, ref: pr.head.sha,
@@ -202,7 +205,7 @@ jobs:
             });
 
             const driftFiles = files.filter(f =>
-              f.status === 'added' && /^coherence\/drift\/DRIFT-\d+\.md$/.test(f.filename)
+              f.status === 'added' && /^coherence\/drift\/DRIFT-[\d-]+\.md$/.test(f.filename)
             );
 
             if (driftFiles.length === 0) {

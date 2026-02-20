@@ -125,7 +125,7 @@ jobs:
             const driftDir = 'coherence/drift';
             if (fs.existsSync(driftDir)) {
               const driftFiles = fs.readdirSync(driftDir)
-                .filter(f => /^DRIFT-\d+\.md$/.test(f));
+                .filter(f => /^DRIFT-[\d-]+\.md$/.test(f));
 
               for (const df of driftFiles) {
                 const content = fs.readFileSync(`${driftDir}/${df}`, 'utf8');

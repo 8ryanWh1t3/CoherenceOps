@@ -87,7 +87,7 @@ if [ ! -d "$DRIFT_DIR" ]; then
   result "Drift Format" "skip" "No drift directory"
 else
   drift_files=()
-  for f in "$DRIFT_DIR"/DRIFT-[0-9]*.md; do
+  for f in "$DRIFT_DIR"/DRIFT-*.md; do
     [ -f "$f" ] && drift_files+=("$f")
   done
 
