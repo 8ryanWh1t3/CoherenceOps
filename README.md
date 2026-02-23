@@ -146,6 +146,7 @@ That's the loop: **Decide → Seal → Drift → Patch → Repeat.**
 | 30-Min Training Outline | [docs/TRAINING_30MIN_OUTLINE.md](docs/TRAINING_30MIN_OUTLINE.md) |
 | CI Installation Contract | [docs/CI_INSTALLATION.md](docs/CI_INSTALLATION.md) |
 | Runtime Governance Engineering (Part I) | [docs/RUNTIME_GOVERNANCE_ENGINEERING.md](docs/RUNTIME_GOVERNANCE_ENGINEERING.md) |
+| Runtime Governance Engineering (Part II) | [docs/RUNTIME_GOVERNANCE_ENGINEERING_PART_II.md](docs/RUNTIME_GOVERNANCE_ENGINEERING_PART_II.md) |
 
 ## What's a "Major PR"?
 

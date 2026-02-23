@@ -28,3 +28,5 @@ A valid governance gate must be:
 
 Use telemetry to observe systems.  
 Use authority gates to govern systems.
+
+Continue: [Runtime Governance Engineering (Part II)](RUNTIME_GOVERNANCE_ENGINEERING_PART_II.md)
