@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "catalog_name": "CoherenceOps Feature Catalog",
+    "catalog_version": "v1",
+    "source_of_truth": "coherence/telemetry/feature_catalog.json"
+  },
+  "categories": [
+    {
+      "id": "CORE_ARTIFACTS",
+      "name": "Core Artifacts",
+      "summary": "DLR / RS / DS / MG as the minimal institutional decision memory set.",
+      "features": [
+        {"id":"DLR","name":"Decision Lineage Record (DLR)","artifacts":["artifacts/DLR.md"],"enforcement":["coherence gate"],"lens":["PRIME","EXEC","OPS"]},
+        {"id":"RS","name":"Reasoning Spec (RS)","artifacts":["artifacts/RS.md"],"enforcement":["coherence gate"],"lens":["PRIME","EXEC","OPS"]},
+        {"id":"DS","name":"Drift Signature (DS)","artifacts":["artifacts/DS.md"],"enforcement":["weekly drift triage"],"lens":["AI/TECH","OPS"]},
+        {"id":"MG","name":"Memory Graph (MG)","artifacts":["artifacts/MG.*"],"enforcement":["why retrieval checks"],"lens":["MEMORY","EXEC"]}
+      ]
+    },
+    {
+      "id": "GOVERNANCE_GATES",
+      "name": "Governance Gates",
+      "summary": "Pre-merge / pre-decision enforcement that prevents governance theater.",
+      "features": [
+        {"id":"DLR_REQUIRED","name":"DLR Required Gate","artifacts":["artifacts/DLR.md"],"enforcement":["CI gate"],"lens":["PRIME"]},
+        {"id":"ASSUMPTION_TTL","name":"Assumption TTL / Half-life","artifacts":["artifacts/DLR.md","artifacts/RS.md"],"enforcement":["expiry alerts"],"lens":["PRIME","EXEC"]},
+        {"id":"NO_OVERWRITE","name":"Seal -> Version -> Patch (No Overwrite)","artifacts":["patches/*"],"enforcement":["workflow policy"],"lens":["PRIME"]}
+      ]
+    },
+    {
+      "id": "DRIFT_TO_PATCH",
+      "name": "Drift -> Patch Loop",
+      "summary": "Detect drift, triage, patch, and update memory as a releaseable operation.",
+      "features": [
+        {"id":"DRIFT_EVENTS","name":"Drift Event Capture","artifacts":["artifacts/DS.md"],"enforcement":["weekly drift rollup"],"lens":["OPS","AI/TECH"]},
+        {"id":"PATCH_RELEASE","name":"Patch Release Workflow","artifacts":["patches/*","release_notes.md"],"enforcement":["monthly patch cadence"],"lens":["EXEC","OPS"]}
+      ]
+    },
+    {
+      "id": "COHERENCE_INDEX",
+      "name": "Coherence Index & Telemetry",
+      "summary": "0-100 Coherence Index with thresholds + adoption stages.",
+      "features": [
+        {"id":"CI_SCORE","name":"Coherence Index Score","artifacts":["docs/COHERENCE_INDEX.md"],"enforcement":["CI job"],"lens":["EXEC","AI/TECH"]},
+        {"id":"ADOPTION_STAGES","name":"Adoption Threshold Stages","artifacts":["docs/ADOPTION_THRESHOLDS.md"],"enforcement":["exec review"],"lens":["EXEC"]}
+      ]
+    },
+    {
+      "id": "LENSES_UI",
+      "name": "Lenses & Interfaces",
+      "summary": "6 lenses and interactive surfaces that make governance legible.",
+      "features": [
+        {"id":"SIX_LENSES","name":"Six Lenses Model","artifacts":["docs/6_LENSES.md"],"enforcement":["training"],"lens":["ICON","HUMAN","AI/TECH"]},
+        {"id":"INTERACTIVE_ARCH","name":"Interactive Architecture View","artifacts":["*.html"],"enforcement":["docs build"],"lens":["ICON"]}
+      ]
+    }
+  ],
+  "outer_edge_boundaries": [
+    "Not claiming runtime model safety control",
+    "Not claiming cryptographic attestation of runtime actions",
+    "Not claiming comprehensive legal policy packs",
+    "Not claiming replacement of enterprise GRC tooling"
+  ]
+}
