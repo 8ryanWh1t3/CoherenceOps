@@ -18,6 +18,18 @@ Governance is not a policy category. It is an execution condition.
 
 Retrospective accountability is a sign that governance was reconstructed after the fact. Effective governance is inspectable during execution, before commitment.
 
+## Five Preconditions for Production AI Governance
+
+Within CoherenceOps scope (repo and workflow execution governance), production control requires all five:
+
+1. Human-defined intent: decision intent is explicit in governing artifacts before execution.
+2. Operational literacy: operators, reviewers, and approvers understand gate semantics and failure handling.
+3. Tested, traceable workflows: binding paths are testable and leave auditable traces.
+4. Transparent judgment criteria: pass/fail criteria are explicit, deterministic, and reviewable.
+5. One named owner with stop authority: refusal authority is assigned and enforceable.
+
+Missing any one of these turns governance into theater.
+
 ## Structural Refusal Requirements
 
 For governance to exist at decision time, all three must be true:

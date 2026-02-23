@@ -147,6 +147,7 @@ That's the loop: **Decide → Seal → Drift → Patch → Repeat.**
 | CI Installation Contract | [docs/CI_INSTALLATION.md](docs/CI_INSTALLATION.md) |
 | Runtime Governance Engineering (Part I) | [docs/RUNTIME_GOVERNANCE_ENGINEERING.md](docs/RUNTIME_GOVERNANCE_ENGINEERING.md) |
 | Runtime Governance Engineering (Part II) | [docs/RUNTIME_GOVERNANCE_ENGINEERING_PART_II.md](docs/RUNTIME_GOVERNANCE_ENGINEERING_PART_II.md) |
+| Five Preconditions for Production Governance | [docs/RUNTIME_GOVERNANCE_ENGINEERING_PART_II.md#five-preconditions-for-production-ai-governance](docs/RUNTIME_GOVERNANCE_ENGINEERING_PART_II.md#five-preconditions-for-production-ai-governance) |
 
 ## What's a "Major PR"?
 

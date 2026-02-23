@@ -11,6 +11,7 @@
 - [x] Automation boundaries language (coding vs engineering distinction)
 - [x] Runtime Governance Engineering (Part I): Pre-Execution Authority Gate
 - [x] Runtime Governance Engineering (Part II): moment-of-binding, structural refusal, fail-closed
+- [x] Five Preconditions for Production Governance (intent, literacy, traceability, criteria, stop authority)
 
 ## Issue Roadmap Alignment (v0.4.3)
 
@@ -22,6 +23,7 @@ Completed and ready to reference in issue tracker:
 - [x] `ISSUE: Runtime Governance Engineering Part I (pre-execution authority)`
 - [x] `ISSUE: Runtime Governance Engineering Part II (moment-of-binding + fail-closed)`
 - [x] `ISSUE: Automation boundaries (coding outlier vs organizational decision work)`
+- [x] `ISSUE: Five preconditions for production behavior control added to runtime governance guidance`
 
 Next issues to open (v0.5.0 execution track):
 - [ ] `ISSUE: Enforce fail-closed structural refusal gate in CI policy checks`
