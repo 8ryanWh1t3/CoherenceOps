@@ -18,3 +18,5 @@ CoherenceOps **IS**:
 Boundary rule:
 > If it happens after execution, it's observability.
 > If it prevents or structures execution, it's governance.
+
+See also: [Runtime Governance Engineering (Part I)](RUNTIME_GOVERNANCE_ENGINEERING.md)
