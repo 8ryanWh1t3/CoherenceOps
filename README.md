@@ -70,6 +70,21 @@ If not, you have a coherence problem. Decisions live in Slack threads, assumptio
 
 CoherenceOps makes the invisible visible — and keeps it current.
 
+## Automation Boundaries
+
+CoherenceOps is built to govern high-consequence decisions, not to claim universal automation.
+
+- Coding is a constrained sandbox: deterministic syntax, fixed rules, fast compiler feedback.
+- Real organizational work is not: strategy, operations, and negotiation depend on context, judgment, and human trade-offs.
+- AI can accelerate code generation and workflow mechanics, but acceleration is not authority.
+- CoherenceOps treats AI outputs as inputs to governance, not substitutes for engineering or leadership.
+
+Practical distinction:
+- `coding`: syntax translation and implementation speed
+- `engineering`: problem framing, ambiguity handling, legacy constraints, stakeholder alignment, risk ownership
+
+CoherenceOps is designed to protect the second category while making the first category faster and auditable.
+
 ## How to Adopt
 
 ### Option A: Copy the folder

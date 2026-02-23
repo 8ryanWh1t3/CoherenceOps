@@ -27,3 +27,12 @@ The ultimate test: can a new team member find out *why* something was built this
 ## 7. Minimal Overhead, Maximum Signal
 
 CoherenceOps adds process only where it prevents loss. Normal PRs get zero overhead. Major decisions get a DLR. Expired assumptions get a drift signal. That's it.
+
+## 8. Automation Has Boundaries
+
+Do not treat software coding performance as a universal proxy for real-world automation. Code is a high-structure domain with deterministic rules and immediate validation loops. Most organizational decisions are low-structure domains with ambiguity, competing incentives, and human context.
+
+CoherenceOps assumes this boundary by design:
+- AI can draft, summarize, and accelerate artifacts.
+- Humans remain accountable for trade-offs, risk acceptance, and final decisions.
+- Governance exists to make these decisions explicit, reviewable, and durable.
