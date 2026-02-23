@@ -30,6 +30,8 @@ Next issues to open (v0.5.0 execution track):
 - [ ] `ISSUE: Add structural pause checkpoint before irreversible merge/deploy actions`
 - [ ] `ISSUE: Publish governance evidence schema for non-reconstructive incident review`
 
+Issue specs: `docs/ISSUES_V0_5_EXECUTION_GOVERNANCE.md`
+
 ## v0.4.0
 - [x] Drift-to-Patch money demo + fixtures + 10-min script
 - [x] Template adoption guide + `bin/coherence-adopt` placeholder replacement
@@ -68,6 +70,7 @@ Next issues to open (v0.5.0 execution track):
 ## v0.5.0
 - Reusable composite actions (`uses: 8ryanWh1t3/CoherenceOps/.github/actions/...`)
 - Historical score trending via commit metadata
+- Execution governance implementation track (fail-closed refusal, authority matrix, structural pause, evidence contract, control-plane spec)
 
 ## v0.6.0
 - Cross-repo coherence federation (shared canon references, upstream discovery, auth model)
