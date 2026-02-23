@@ -1,6 +1,36 @@
 # Roadmap
 
-## v0.4.0 (current)
+## v0.4.3 (current)
+- [x] Feature + Category Catalog source of truth (`coherence/telemetry/feature_catalog.json`)
+- [x] Feature Catalog renderer (`docs/FEATURE_CATALOG.md` via `scripts/render_feature_catalog.py`)
+- [x] PR comment artifact generator (`release_kpis/COHERENCE_PR_COMMENT.md`)
+- [x] Outer-edge boundaries doc (`docs/OUTER_EDGE_BOUNDARIES.md`)
+- [x] Single-source version sync helper (`VERSION` + `scripts/version_sync.py`)
+- [x] Make targets for `version-sync`, `feature-catalog`, `coherence-pr-comment`
+- [x] Workflow wiring for catalog + PR-comment artifact generation
+- [x] Automation boundaries language (coding vs engineering distinction)
+- [x] Runtime Governance Engineering (Part I): Pre-Execution Authority Gate
+- [x] Runtime Governance Engineering (Part II): moment-of-binding, structural refusal, fail-closed
+
+## Issue Roadmap Alignment (v0.4.3)
+
+Completed and ready to reference in issue tracker:
+- [x] `ISSUE: Feature Catalog as authoritative governance inventory`
+- [x] `ISSUE: Coherence Gate Summary artifact for PR automation`
+- [x] `ISSUE: Outer-edge boundaries and explicit non-claims`
+- [x] `ISSUE: Version single-source-of-truth + sync utility`
+- [x] `ISSUE: Runtime Governance Engineering Part I (pre-execution authority)`
+- [x] `ISSUE: Runtime Governance Engineering Part II (moment-of-binding + fail-closed)`
+- [x] `ISSUE: Automation boundaries (coding outlier vs organizational decision work)`
+
+Next issues to open (v0.5.0 execution track):
+- [ ] `ISSUE: Enforce fail-closed structural refusal gate in CI policy checks`
+- [ ] `ISSUE: Require execution-time evidence fields for binding decisions`
+- [ ] `ISSUE: Add explicit refusal authority matrix template (who can block, under what authority)`
+- [ ] `ISSUE: Add structural pause checkpoint before irreversible merge/deploy actions`
+- [ ] `ISSUE: Publish governance evidence schema for non-reconstructive incident review`
+
+## v0.4.0
 - [x] Drift-to-Patch money demo + fixtures + 10-min script
 - [x] Template adoption guide + `bin/coherence-adopt` placeholder replacement
 - [x] Date-based auto IDs: `bin/coherence-new-dlr`, `bin/coherence-new-drift`
