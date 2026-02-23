@@ -1,5 +1,3 @@
-# Top Risks — 2026-02-20
+# Top Risks — 2026-02-23
 
-| Priority | Type | Detail |
-|----------|------|--------|
-| LOW | DRIFT/low | DRIFT-0001 |
+No active risks. All assumptions current, no open drift.
