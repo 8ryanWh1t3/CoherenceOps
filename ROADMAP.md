@@ -73,9 +73,19 @@ Issue specs: `docs/ISSUES_V0_5_EXECUTION_GOVERNANCE.md`
 - Reusable composite actions (`uses: 8ryanWh1t3/CoherenceOps/.github/actions/...`)
 - Historical score trending via commit metadata
 - Execution governance implementation track (fail-closed refusal, authority matrix, structural pause, evidence contract, control-plane spec)
+- Agnostic Executive Control Plane (ECP) definition:
+  - authority routing model
+  - execution gating model
+  - reasoning validation contract
+  - cross-domain oversight boundaries
+- ECP MVP integration across existing CI/workflow binding points
 
 ## v0.6.0
 - Cross-repo coherence federation (shared canon references, upstream discovery, auth model)
+- ECP expansion beyond CI:
+  - multi-agent orchestration policy hooks
+  - human-in-the-loop authority checkpoints
+  - vendor/model-agnostic governance adapters
 
 ## Release Checklist
 
