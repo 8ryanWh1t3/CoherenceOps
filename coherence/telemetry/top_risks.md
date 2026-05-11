@@ -1,3 +1,5 @@
-# Top Risks — 2026-05-04
+# Top Risks — 2026-05-11
 
-No active risks. All assumptions current, no open drift.
+| Priority | Type | Detail |
+|----------|------|--------|
+| MED | EXPIRING | ASM-0001 — Teams will adopt folder-based governance if templates are pre-filled (expires 2026-05-20) |
