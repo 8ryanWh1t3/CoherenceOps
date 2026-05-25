@@ -1,19 +1,19 @@
 {
   "version": "0.4.2",
-  "date": "2026-05-18",
-  "score": 82,
+  "date": "2026-05-25",
+  "score": 78,
   "components": {
     "dlr_coverage": {
-      "value": 67,
-      "weight": 25,
-      "points": 17,
-      "detail": "2/3 major PRs have DLR"
-    },
-    "assumption_currency": {
       "value": 100,
       "weight": 25,
       "points": 25,
-      "detail": "0/2 assumptions expired"
+      "detail": "No major PRs in last 90 days"
+    },
+    "assumption_currency": {
+      "value": 50,
+      "weight": 25,
+      "points": 13,
+      "detail": "1/2 assumptions expired"
     },
     "drift_health": {
       "value": 100,
