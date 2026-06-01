@@ -1,4 +1,4 @@
-# Top Risks — 2026-05-25
+# Top Risks — 2026-06-01
 
 | Priority | Type | Detail |
 |----------|------|--------|
